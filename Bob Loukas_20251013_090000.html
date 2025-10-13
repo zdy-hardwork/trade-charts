@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <title>Youtube频道：Bob Loukas</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <style>
+            .chart-container {
+                width: 1000px;
+                height: 600px;
+                margin: 30px auto;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            .stats-header {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            .chart-controls {
+                 /* 使用 Flexbox 布局 */
+                display: flex;
+                /* 将子元素对齐到两端，第一个在左，最后一个在右 */
+                justify-content: space-between;
+                align-items: center; /* 垂直居中对齐 */
+                margin-bottom: 10px;
+                padding: 0 5px; /* 添加一些内边距，防止贴边 */
+            }
+            .chart-controls button {
+                padding: 5px 10px;
+                cursor: pointer;
+                border: 1px solid #ccc;
+                background-color: #f9f9f9;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stats-header">Youtube频道：Bob Loukas</div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="viewCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('viewCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('viewCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="viewCountChart"></div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="subscriberCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('subscriberCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('subscriberCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="subscriberCountChart"></div>
+        </div>
+
+        <script>
+            // 初始化ECharts实例
+            var viewCountChartDom = document.getElementById('viewCountChart');
+            var viewCountChart = echarts.init(viewCountChartDom);
+            var subscriberCountChartDom = document.getElementById('subscriberCountChart');
+            var subscriberCountChart = echarts.init(subscriberCountChartDom);
+
+            // 使用Python传递过来的JSON数据
+            var viewCountData = [{'id': 'MTUxNTI1NzI5MDcyMTUyNTcyOTA3MjAwMDYyOA', 'published_at': '2018-05-07 21:37:52', 'title': 'Bitcoin Live', 'viewCount': '5889'}, {'id': 'MTUxNTI1NzI5MDcyMTUyNTcyOTA3MjAwMDYyOA', 'published_at': '2018-05-07 21:37:52', 'title': 'Bitcoin Live', 'viewCount': '5889'}, {'id': 'MTUxNTQ3NDgwNjU4MTU0NzQ4MDY1ODAwMDQ3OA', 'published_at': '2019-01-14 15:44:18', 'title': "Bitcoin's 4 Year Cycle - Opportunity   (Original Author)", 'viewCount': '233546'}, {'id': 'MTUxNTQ4MTc3MTU2MTU0ODE3NzE1NjAwMDY4Mg', 'published_at': '2019-01-22 17:12:36', 'title': "Bitcoin Cycles - A Trader's Perspective", 'viewCount': '44954'}, {'id': 'MTUxNTQ5MDQ4MDExMTU0OTA0ODAxMTAwMDM1MA', 'published_at': '2019-02-01 19:06:51', 'title': 'Do not ignore this Bitcoin Monthly Chart Developement', 'viewCount': '31012'}, {'id': 'MTUxNTQ5NTY4OTA0MTU0OTU2ODkwNDAwMDA0MQ', 'published_at': '2019-02-07 19:48:24', 'title': 'What is your Bitcoin Strategy?', 'viewCount': '21555'}, {'id': 'MTUxNTUxNDYyMzQ1MTU1MTQ2MjM0NTAwMDk3OQ', 'published_at': '2019-03-01 17:45:45', 'title': 'Are You Good Enough to Ride the Next Bitcoin 4-year Cycle?', 'viewCount': '43193'}, {'id': 'MTUxNTUzMTgyMDQ3MTU1MzE4MjA0NzAwMDc3Mw', 'published_at': '2019-03-21 15:27:27', 'title': 'Bracing for the next Bitcoin Sell-Off', 'viewCount': '37183'}, {'id': 'MTUxNTU0MjIxMDAyMTU1NDIyMTAwMjAwMDc3Mg', 'published_at': '2019-04-02 16:03:22', 'title': 'The Next 4-Year Cycle Started', 'viewCount': '168515'}, {'id': 'MTUxNTU2Mjk2NTMwMTU1NjI5NjUzMDAwMDY3MA', 'published_at': '2019-04-26 16:35:30', 'title': 'Bitcoin 4 Year Journey -  The Right HODL Allocation', 'viewCount': '54128'}, {'id': 'MTUxNTU4MTMyODMzMTU1ODEzMjgzMzAwMDgyMA', 'published_at': '2019-05-17 22:40:33', 'title': 'HODL Yourself', 'viewCount': '47892'}, {'id': 'MTUxNTU5MTM5MjIyMTU1OTEzOTIyMjAwMDU4MQ', 'published_at': '2019-05-29 14:13:42', 'title': 'Process - Discipline - Strategy.  Keys to Bitcoin HODL success.', 'viewCount': '33802'}, {'id': 'MTUxNTYxMTI3MDcyMTU2MTEyNzA3MjAwMDk0OA', 'published_at': '2019-06-21 14:24:32', 'title': 'Bitcoin Accumulation - Price Discovery', 'viewCount': '37479'}, {'id': 'MTUxNTYzNDAxMDkxMTU2MzQwMTA5MTAwMDkzMQ', 'published_at': '2019-07-17 22:04:51', 'title': "Me Panic?  Bitcoin Smart HODLers don't panic", 'viewCount': '34593'}, {'id': 'MTUxNTY1OTg3NDIyMTU2NTk4NzQyMjAwMDI5NA', 'published_at': '2019-08-16 20:30:22', 'title': "Bitcoin's Awareness Phase", 'viewCount': '52370'}, {'id': 'MTUxNTcwMDYyNjQ3MTU3MDA2MjY0NzAwMDc0OA', 'published_at': '2019-10-03 00:30:47', 'title': 'Just a Matter of Perspective - Bitcoin 4-year Journey', 'viewCount': '48205'}, {'id': 'MTUxNTczMDgxMDg2MTU3MzA4MTA4NjAwMDA2NA', 'published_at': '2019-11-06 22:58:06', 'title': 'Watch That Swing  -  Bitcoin', 'viewCount': '38516'}, {'id': 'MTUxNTc1NDc4Mzc2MTU3NTQ3ODM3NjAwMDgxOQ', 'published_at': '2019-12-04 16:52:56', 'title': "You're In Control -  Bitcoin", 'viewCount': '31609'}, {'id': 'MTUxNTc4NDM2MTA2MTU3ODQzNjEwNjAwMDIzMw', 'published_at': '2020-01-07 22:28:26', 'title': 'The 4-Year Cycle Journey in 2020', 'viewCount': '45732'}, {'id': 'MTUxNTgxNzA3ODA1MTU4MTcwNzgwNTAwMDMxMQ', 'published_at': '2020-02-14 19:16:45', 'title': 'Back on Track - #Bitcoin', 'viewCount': '34201'}, {'id': 'MTUxNTg0MDQ5MDIzMTU4NDA0OTAyMzAwMDYyOQ', 'published_at': '2020-03-12 21:37:03', 'title': 'The Biggest Test', 'viewCount': '26869'}, {'id': 'MTUxNTg3NzQ0MjgyMTU4Nzc0NDI4MjAwMDcwOQ', 'published_at': '2020-04-24 16:04:42', 'title': 'We Have Come So Far', 'viewCount': '43150'}, {'id': 'MTUxNTkxOTkzMTM4MTU5MTk5MzEzODAwMDA4Ng', 'published_at': '2020-06-12 20:18:58', 'title': 'Only The Strong', 'viewCount': '43082'}, {'id': 'MTUxNTk4MDQyODc5MTU5ODA0Mjg3OTAwMDgxMw', 'published_at': '2020-08-21 20:47:59', 'title': 'The Person in the Mirror', 'viewCount': '31236'}, {'id': 'MTUxNjA1ODExNjU0MTYwNTgxMTY1NDAwMDU5MA', 'published_at': '2020-11-19 18:47:34', 'title': 'Your Training is Complete', 'viewCount': '36990'}, {'id': 'MTUxNjEwMjE4MTUxMTYxMDIxODE1MTAwMDMwOA', 'published_at': '2021-01-09 18:49:11', 'title': 'The Next Leg - 4 Year Journey', 'viewCount': '50782'}, {'id': 'MTUxNjE1MjA4NDAyMTYxNTIwODQwMjAwMDI5Nw', 'published_at': '2021-03-08 13:00:02', 'title': 'Next Up - The Mania!    -  4 Year Journey', 'viewCount': '70721'}, {'id': 'MTUxNjIwNDk0MjUxMTYyMDQ5NDI1MTAwMDk0OA', 'published_at': '2021-05-08 17:17:31', 'title': 'The Business End of the Bitcoin 4-Year Cycle Journey', 'viewCount': '71403'}, {'id': 'MTUxNjIzOTQ1NjIyMTYyMzk0NTYyMjAwMDYyNQ', 'published_at': '2021-06-17 16:00:22', 'title': 'Divorce Yourself from Emotion - 4 Year Cycle Journey', 'viewCount': '44854'}, {'id': 'MTUxNjI5NDEwMTA2MTYyOTQxMDEwNjAwMDEyNA', 'published_at': '2021-08-19 21:55:06', 'title': 'The Final Hurdle -  4 Year Journey', 'viewCount': '87945'}, {'id': 'MTUxNjM0MzA1ODgwMTYzNDMwNTg4MDAwMDUwNQ', 'published_at': '2021-10-15 13:51:20', 'title': 'On Your Marks    -  4 Year Journey', 'viewCount': '81044'}, {'id': 'MTUxNjM5NjE0OTc1MTYzOTYxNDk3NTAwMDEzMA', 'published_at': '2021-12-16 00:36:15', 'title': 'Fear Is Your Friend', 'viewCount': '65231'}, {'id': 'MTUxNjQ0NzcwNTAxMTY0NDc3MDUwMTAwMDkwOA', 'published_at': '2022-02-13 16:41:41', 'title': 'The Final Countdown - 4 Year Journey', 'viewCount': '55298'}, {'id': 'MTUxNjUxMTczOTI3MTY1MTE3MzkyNzAwMDEwOA', 'published_at': '2022-04-28 19:25:27', 'title': 'Wounded - But Will Rise -  4 Year Journey', 'viewCount': '39927'}, {'id': 'MTUxNjU0NjkzMDc4MTY1NDY5MzA3ODAwMDgxNw', 'published_at': '2022-06-08 12:57:58', 'title': 'There Will Be Blood', 'viewCount': '61035'}, {'id': 'MTUxNjU5NzAzMjEyMTY1OTcwMzIxMjAwMDE1Nw', 'published_at': '2022-08-05 12:40:12', 'title': 'Be Smart - Not Dumb', 'viewCount': '60796'}, {'id': 'MTUxNjY3NDk4Nzg3MTY2NzQ5ODc4NzAwMDA5OQ', 'published_at': '2022-11-03 18:06:27', 'title': 'The Birth of a Cycle', 'viewCount': '66177'}, {'id': 'MTUxNjczMzc4MjU3MTY3MzM3ODI1NzAwMDk1MQ', 'published_at': '2023-01-10 19:17:37', 'title': 'The NEW 4 year Cycle', 'viewCount': '88901'}, {'id': 'MTUxNjgwMTIwMzI0MTY4MDEyMDMyNDAwMDI2Nw', 'published_at': '2023-03-29 20:05:24', 'title': 'A New Season', 'viewCount': '56712'}, {'id': 'MTUxNjg0Mjc1NDc5MTY4NDI3NTQ3OTAwMDQ3Mg', 'published_at': '2023-05-16 22:17:59', 'title': 'The Most Difficult Part of the Bull Market', 'viewCount': '59210'}, {'id': 'MTUxNjg4ODMxMTUxMTY4ODgzMTE1MTAwMDU5OA', 'published_at': '2023-07-08 15:45:51', 'title': 'Green Lights', 'viewCount': '67799'}, {'id': 'MTUxNjk0MTIwODE4MTY5NDEyMDgxODAwMDc2OA', 'published_at': '2023-09-07 21:06:58', 'title': 'The First Cycle Scare', 'viewCount': '62212'}, {'id': 'MTUxNzAwNTE2MTI0MTcwMDUxNjEyNDAwMDI0MQ', 'published_at': '2023-11-20 21:35:24', 'title': 'Be Aware', 'viewCount': '98544'}, {'id': 'MTUxNzA3ODUzNjk4MTcwNzg1MzY5ODAwMDc1Ng', 'published_at': '2024-02-13 19:48:18', 'title': 'Thy Strength Befits Bitcoin', 'viewCount': '109313'}, {'id': 'MTUxNzExNzM4ODQ3MTcxMTczODg0NzAwMDczNg', 'published_at': '2024-03-29 19:00:47', 'title': 'The Landing', 'viewCount': '84825'}, {'id': 'MTUxNzE4NzI1MDE4MTcxODcyNTAxODAwMDM2NA', 'published_at': '2024-06-18 15:36:58', 'title': 'Give Me Your Coins Oh Weak-Kneed', 'viewCount': '102257'}, {'id': 'MTUxNzI4NTg2OTQ3MTcyODU4Njk0NzAwMDM1NA', 'published_at': '2024-10-10 19:02:27', 'title': 'No Bull?', 'viewCount': '97948'}, {'id': 'MTUxNzMyMTM0OTQxMTczMjEzNDk0MTAwMDI3Nw', 'published_at': '2024-11-20 20:35:41', 'title': 'The Raging Phase', 'viewCount': '102287'}, {'id': 'MTUxNzQwNTk1ODA3MTc0MDU5NTgwNzAwMDIwNg', 'published_at': '2025-02-26 18:50:07', 'title': 'Nothing We Have Not Seen Before', 'viewCount': '89162'}, {'id': 'MTUxNzQ0MTM5MTM1MTc0NDEzOTEzNTAwMDA5OQ', 'published_at': '2025-04-08 19:05:35', 'title': 'Mid-flight Turbulence', 'viewCount': '58685'}, {'id': 'MTUxNzUwOTYwMTE2MTc1MDk2MDExNjAwMDQyMA', 'published_at': '2025-06-26 17:48:36', 'title': 'The Perfect Storm', 'viewCount': '107953'}, {'id': 'MTUxNzU4NzM1NTA1MTc1ODczNTUwNTAwMDgxNg', 'published_at': '2025-09-24 17:38:25', 'title': 'Are Your Ready?', 'viewCount': '88634'}];
+
+            // 准备图表数据
+            var viewCountXAxisData = ['2018-05-07', '2018-05-07', '2019-01-14', '2019-01-22', '2019-02-01', '2019-02-07', '2019-03-01', '2019-03-21', '2019-04-02', '2019-04-26', '2019-05-17', '2019-05-29', '2019-06-21', '2019-07-17', '2019-08-16', '2019-10-03', '2019-11-06', '2019-12-04', '2020-01-07', '2020-02-14', '2020-03-12', '2020-04-24', '2020-06-12', '2020-08-21', '2020-11-19', '2021-01-09', '2021-03-08', '2021-05-08', '2021-06-17', '2021-08-19', '2021-10-15', '2021-12-16', '2022-02-13', '2022-04-28', '2022-06-08', '2022-08-05', '2022-11-03', '2023-01-10', '2023-03-29', '2023-05-16', '2023-07-08', '2023-09-07', '2023-11-20', '2024-02-13', '2024-03-29', '2024-06-18', '2024-10-10', '2024-11-20', '2025-02-26', '2025-04-08', '2025-06-26', '2025-09-24'];
+            var viewCountSeriesData = ['5889', '5889', '233546', '44954', '31012', '21555', '43193', '37183', '168515', '54128', '47892', '33802', '37479', '34593', '52370', '48205', '38516', '31609', '45732', '34201', '26869', '43150', '43082', '31236', '36990', '50782', '70721', '71403', '44854', '87945', '81044', '65231', '55298', '39927', '61035', '60796', '66177', '88901', '56712', '59210', '67799', '62212', '98544', '109313', '84825', '102257', '97948', '102287', '89162', '58685', '107953', '88634'];
+            var subscriberCountXAxisData = ['2025-09-26', '2025-09-27', '2025-09-28', '2025-09-29', '2025-09-30', '2025-10-01', '2025-10-02', '2025-10-03', '2025-10-04', '2025-10-05', '2025-10-06', '2025-10-07', '2025-10-08', '2025-10-09', '2025-10-10', '2025-10-11', '2025-10-12'];
+            var subscriberCountSeriesData = [30, 41, 1103, 123, 334, 333, -66, 33, 33, -66, 33, 34, -67, 33, 34, -67, 33];
+
+            // 定义一个函数来改变图表类型
+            function changeChartType(chartId, type, typeText) {
+                // 根据 ID 获取 ECharts 实例
+                var chartInstance = echarts.getInstanceByDom(document.getElementById(chartId));
+                if (chartInstance) {
+                    // 获取当前配置，并进行深拷贝，避免直接修改原始配置
+                    var currentOption = chartInstance.getOption();
+                    var newOption = JSON.parse(JSON.stringify(currentOption));
+
+                    // 仅修改 series 的 type
+                    newOption.series[0].type = type;
+
+                    // 根据图表类型调整特定配置
+                    if (type === 'line') {
+                        // 折线图
+                        newOption.series[0].smooth = true;
+                        newOption.series[0].symbol = 'circle';
+                        newOption.series[0].symbolSize = 8;
+                        newOption.series[0].itemStyle = {
+                            color: '#6A5ACD'
+                        };
+                    } else {
+                        // 柱形图
+                        newOption.series[0].smooth = false;
+                        newOption.series[0].symbol = 'none';
+                        newOption.series[0].symbolSize = 0;
+
+                        // 重新设置柱形图的动态颜色函数
+                        if (chartId === 'viewCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 500000) return '#8B0000';  // 极高热
+                                if (value > 200000) return '#DC143C';  // 超高热
+                                if (value > 100000) return '#FF4500';  // 高热
+                                if (value > 50000) return '#FF8C00';  // 中高热
+                                if (value > 20000) return '#FFA500';  // 中热
+                                if (value > 10000) return '#FFD700';  // 中低热
+                                if (value > 5000) return '#32CD32';  // 一般
+                                if (value > 1000)  return '#1E90FF';  // 较低
+                                return '#B0C4DE';     // 冷门
+                            };
+                        } else if (chartId === 'subscriberCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 1000) return '#FF4500';  // 高热
+                                if (value > 500) return '#FF8C00';  // 中热
+                                if (value > 200) return '#32CD32';   // 一般
+                                return '#1E90FF';                     // 较低
+                            };
+                        }
+                    }
+
+                    chartInstance.setOption(newOption, true);
+                    document.getElementById(chartId + 'Type').innerText = typeText;
+                }
+            }
+
+            // 初始配置和渲染图表
+            var viewCountOption = {
+                title: {
+                    text: '每日视频播放量统计',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        var dataIndex = params[0].dataIndex;
+                        var videoItem = viewCountData[dataIndex];
+                        return '视频标题: ' + videoItem.title + '<br/>' +
+                               '发布日期: ' + videoItem.published_at + '<br/>' +
+                               '播放量: ' + videoItem.viewCount.toLocaleString();
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: viewCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '发布日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '播放量',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    },
+                    axisLabel: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: '播放量',
+                    type: 'bar',
+                    data: viewCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 500000) return '#8B0000';
+                            if (value > 200000) return '#DC143C';
+                            if (value > 100000) return '#FF4500';
+                            if (value > 50000) return '#FF8C00';
+                            if (value > 20000) return '#FFA500';
+                            if (value > 10000) return '#FFD700';
+                            if (value > 5000) return '#32CD32';
+                            if (value > 1000)  return '#1E90FF';
+                            return '#B0C4DE';
+                        }
+                    },
+                    label: {
+                        show: false,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value.toLocaleString();
+                        }
+                    }
+                }],
+                dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            viewCountChart.setOption(viewCountOption);
+
+            var subscriberCountOption = {
+                title: {
+                    text: '每日新增订阅数',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: subscriberCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '新增订阅数',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    }
+                },
+                series: [{
+                    name: '新增订阅数',
+                    type: 'bar',
+                    data: subscriberCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 1000) return '#FF4500';
+                            if (value > 500) return '#FF8C00';
+                            if (value > 200) return '#32CD32';
+                            return '#1E90FF';
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value;
+                        }
+                    }
+                }],
+                 dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            subscriberCountChart.setOption(subscriberCountOption);
+
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                viewCountChart.resize();
+                subscriberCountChart.resize();
+            });
+        </script>
+    </body>
+    </html>
