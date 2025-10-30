@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <title>Youtube频道：Benjamin Cowen</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <style>
+            .chart-container {
+                width: 1000px;
+                height: 600px;
+                margin: 30px auto;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            .stats-header {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            .chart-controls {
+                 /* 使用 Flexbox 布局 */
+                display: flex;
+                /* 将子元素对齐到两端，第一个在左，最后一个在右 */
+                justify-content: space-between;
+                align-items: center; /* 垂直居中对齐 */
+                margin-bottom: 10px;
+                padding: 0 5px; /* 添加一些内边距，防止贴边 */
+            }
+            .chart-controls button {
+                padding: 5px 10px;
+                cursor: pointer;
+                border: 1px solid #ccc;
+                background-color: #f9f9f9;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stats-header">Youtube频道：Benjamin Cowen</div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="viewCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('viewCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('viewCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="viewCountChart"></div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="subscriberCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('subscriberCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('subscriberCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="subscriberCountChart"></div>
+        </div>
+
+        <script>
+            // 初始化ECharts实例
+            var viewCountChartDom = document.getElementById('viewCountChart');
+            var viewCountChart = echarts.init(viewCountChartDom);
+            var subscriberCountChartDom = document.getElementById('subscriberCountChart');
+            var subscriberCountChart = echarts.init(subscriberCountChartDom);
+
+            // 使用Python传递过来的JSON数据
+            var viewCountData = [{'id': 'MTUxNzQ3NjI1ODI3MTc0NzYyNTgyNzAwMDcwOQ', 'published_at': '2025-05-19 03:37:07', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '70137'}, {'id': 'MTUxNzQ3NzE2NjE1MTc0NzcxNjYxNTAwMDkwOA', 'published_at': '2025-05-20 04:50:15', 'title': 'Bitcoin: Upcoming Golden Cross', 'viewCount': '99318'}, {'id': 'MTUxNzQ3ODA0NTUxMTc0NzgwNDU1MTAwMDM0MQ', 'published_at': '2025-05-21 05:15:51', 'title': 'Bitcoin: Dubious Speculation', 'viewCount': '61042'}, {'id': 'MTUxNzQ3ODYwNDQ4MTc0Nzg2MDQ0ODAwMDc0Nw', 'published_at': '2025-05-21 20:47:28', 'title': 'Bitcoin Sets a New All Time High: What is Next?', 'viewCount': '124836'}, {'id': 'MTUxNzQ3OTIyMTcyMTc0NzkyMjE3MjAwMDE2MQ', 'published_at': '2025-05-22 13:56:12', 'title': 'NFA Live! Bitcoin in 2025!', 'viewCount': '50443'}, {'id': 'MTUxNzQ3OTU2ODc0MTc0Nzk1Njg3NDAwMDU1OQ', 'published_at': '2025-05-22 23:34:34', 'title': 'Speaking at BTC Conference in Vegas', 'viewCount': '7336'}, {'id': 'MTUxNzQ4MDMyMzQzMTc0ODAzMjM0MzAwMDA2Mg', 'published_at': '2025-05-23 20:32:23', 'title': "May 28 (Wed) I'm Speaking at BTC Conference in Vegas", 'viewCount': '5261'}, {'id': 'MTUxNzQ4MDMyNTgwMTc0ODAzMjU4MDAwMDYwNw', 'published_at': '2025-05-23 20:36:20', 'title': 'Bitcoin: The Golden Cross Dump', 'viewCount': '102870'}, {'id': 'MTUxNzQ4MjI1OTQ5MTc0ODIyNTk0OTAwMDYzMQ', 'published_at': '2025-05-26 02:19:09', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '79421'}, {'id': 'MTUxNzQ4MzAyNTAyMTc0ODMwMjUwMjAwMDE0OA', 'published_at': '2025-05-26 23:35:02', 'title': 'Bitcoin Las Vegas', 'viewCount': '37709'}, {'id': 'MTUxNzQ4NzI2MDg1MTc0ODcyNjA4NTAwMDc0MA', 'published_at': '2025-05-31 21:14:45', 'title': 'Bitcoin Dominance', 'viewCount': '85560'}, {'id': 'MTUxNzQ4ODY0NDI1MTc0ODg2NDQyNTAwMDk3NA', 'published_at': '2025-06-02 11:40:25', 'title': 'Bitcoin: Dubious Speculation', 'viewCount': '78106'}, {'id': 'MTUxNzQ5MDM1NTA0MTc0OTAzNTUwNDAwMDc1OQ', 'published_at': '2025-06-04 11:11:44', 'title': 'Bitcoin: Supply in Profit & Loss', 'viewCount': '34176'}, {'id': 'MTUxNzQ5MDk1OTg0MTc0OTA5NTk4NDAwMDM4Ng', 'published_at': '2025-06-05 03:59:44', 'title': 'Bitcoin: The Beauty of Mathematics (Part 59)', 'viewCount': '43176'}, {'id': 'MTUxNzQ5MTU1NTAwMTc0OTE1NTUwMDAwMDU0NA', 'published_at': '2025-06-05 20:31:40', 'title': 'Donald Trump vs. Elon Musk', 'viewCount': '89946'}, {'id': 'MTUxNzQ5MjQxMTM3MTc0OTI0MTEzNzAwMDM2NQ', 'published_at': '2025-06-06 20:18:57', 'title': 'Bitcoin Las Vegas - Into The Cryptoverse Party 2025', 'viewCount': '17223'}, {'id': 'MTUxNzQ5MzA5NDIxMTc0OTMwOTQyMTAwMDI2NA', 'published_at': '2025-06-07 15:17:01', 'title': 'Elon vs. Trump', 'viewCount': '14604'}, {'id': 'MTUxNzQ5NDE0MTc0MTc0OTQxNDE3NDAwMDk1Mg', 'published_at': '2025-06-08 20:22:54', 'title': 'Unemployment Rate Stays at 4.2%', 'viewCount': '44335'}, {'id': 'MTUxNzQ5NDk3NDU0MTc0OTQ5NzQ1NDAwMDE2Mw', 'published_at': '2025-06-09 19:30:54', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '85343'}, {'id': 'MTUxNzQ5Njk4Njk1MTc0OTY5ODY5NTAwMDQxNw', 'published_at': '2025-06-12 03:24:55', 'title': 'Bitcoin: An Indicator For Market Cycle Tops', 'viewCount': '113536'}, {'id': 'MTUxNzQ5Nzg0MDI2MTc0OTc4NDAyNjAwMDg1Ng', 'published_at': '2025-06-13 03:07:06', 'title': 'Inflation Rises to 2.4%', 'viewCount': '39202'}, {'id': 'MTUxNzQ5ODU4NTM2MTc0OTg1ODUzNjAwMDI2OA', 'published_at': '2025-06-13 23:48:56', 'title': 'Trying to Identify the Bitcoin Market Cycle Top', 'viewCount': '21200'}, {'id': 'MTUxNzQ5OTA5NzMwMTc0OTkwOTczMDAwMDMxMQ', 'published_at': '2025-06-14 14:02:10', 'title': 'Altcoins Hit 0.32', 'viewCount': '120497'}, {'id': 'MTUxNzUwMTA5ODc1MTc1MDEwOTg3NTAwMDU2Mw', 'published_at': '2025-06-16 21:37:55', 'title': 'Bitcoin: Running Return on Investment', 'viewCount': '34618'}, {'id': 'MTUxNzUwMjY4NTI1MTc1MDI2ODUyNTAwMDA1Nw', 'published_at': '2025-06-18 17:42:05', 'title': 'Bitcoin: Fear & Greed', 'viewCount': '42999'}, {'id': 'MTUxNzUwMjg4NDA2MTc1MDI4ODQwNjAwMDE2NA', 'published_at': '2025-06-18 23:13:26', 'title': "Bitcoin's 4 Year ROI: Sticking Around For 4 Years", 'viewCount': '10487'}, {'id': 'MTUxNzUwMzY1NzY0MTc1MDM2NTc2NDAwMDY3Ng', 'published_at': '2025-06-19 20:42:44', 'title': 'S&P 500: Year-To-Date Returns', 'viewCount': '20303'}, {'id': 'MTUxNzUwNDQ0NDE1MTc1MDQ0NDQxNTAwMDIwNA', 'published_at': '2025-06-20 18:33:35', 'title': 'ETH/BTC', 'viewCount': '76784'}, {'id': 'MTUxNzUwNTYxMTM2MTc1MDU2MTEzNjAwMDY4OA', 'published_at': '2025-06-22 02:58:56', 'title': 'Bitcoin Dominance Hits a New Cycle High!', 'viewCount': '70218'}, {'id': 'MTUxNzUwNjU3MjAzMTc1MDY1NzIwMzAwMDU0NA', 'published_at': '2025-06-23 05:40:03', 'title': 'Bitcoin Bull Market Support Band', 'viewCount': '83064'}, {'id': 'MTUxNzUwNzc2OTEwMTc1MDc3NjkxMDAwMDc4Mw', 'published_at': '2025-06-24 14:55:10', 'title': 'A Little Crypto', 'viewCount': '52365'}, {'id': 'MTUxNzUwODIwNzEzMTc1MDgyMDcxMzAwMDg2MQ', 'published_at': '2025-06-25 03:05:13', 'title': 'If Bitcoin stays above the 50-week moving average then...', 'viewCount': '70318'}, {'id': 'MTUxNzUwOTQ2NzY5MTc1MDk0Njc2OTAwMDUwNw', 'published_at': '2025-06-26 14:06:09', 'title': 'NFA Live! Bitcoin in 2025', 'viewCount': '38338'}, {'id': 'MTUxNzUxMDM3ODE4MTc1MTAzNzgxODAwMDUwMw', 'published_at': '2025-06-27 15:23:38', 'title': 'Why Has Alt Season Not Happened Yet (Part 2)?', 'viewCount': '130841'}, {'id': 'MTUxNzUxMTY4NjczMTc1MTE2ODY3MzAwMDAwOA', 'published_at': '2025-06-29 03:44:33', 'title': 'Bitcoin Social Interest: Where is Everyone?', 'viewCount': '68199'}, {'id': 'MTUxNzUxMjUxMzc1MTc1MTI1MTM3NTAwMDQ0Mg', 'published_at': '2025-06-30 02:42:55', 'title': 'Bitcoin Bull Market Support Band', 'viewCount': '63889'}, {'id': 'MTUxNzUxMzkxMDQ0MTc1MTM5MTA0NDAwMDk2OA', 'published_at': '2025-07-01 17:30:44', 'title': 'Bitcoin: The Beauty of Mathematics (Part 60)', 'viewCount': '50825'}, {'id': 'MTUxNzUxNDg5OTIyMTc1MTQ4OTkyMjAwMDMyMA', 'published_at': '2025-07-02 20:58:42', 'title': 'The Total Cryptocurrency Asset Class Is', 'viewCount': '14837'}, {'id': 'MTUxNzUxNTYxNDIwMTc1MTU2MTQyMDAwMDUyMg', 'published_at': '2025-07-03 16:50:20', 'title': 'Unemployment Rate Drops to 4.1%', 'viewCount': '53835'}, {'id': 'MTUxNzUxNjY4MzE5MTc1MTY2ODMxOTAwMDYxNA', 'published_at': '2025-07-04 22:31:59', 'title': 'Altcoins Hit 0.31', 'viewCount': '110376'}, {'id': 'MTUxNzUxODI1ODY0MTc1MTgyNTg2NDAwMDAxNg', 'published_at': '2025-07-06 18:17:44', 'title': 'Bitcoin: The Importance of the 50 Week Moving Average', 'viewCount': '73648'}, {'id': 'MTUxNzUxOTA3NDUwMTc1MTkwNzQ1MDAwMDA3MQ', 'published_at': '2025-07-07 16:57:30', 'title': 'Is DXY Nearing A Low?', 'viewCount': '41603'}, {'id': 'MTUxNzUxOTg3NTE1MTc1MTk4NzUxNTAwMDM5Mg', 'published_at': '2025-07-08 15:11:55', 'title': 'Bitcoin Market Cycle ROI', 'viewCount': '33150'}, {'id': 'MTUxNzUyMDM0OTUxMTc1MjAzNDk1MTAwMDMzMA', 'published_at': '2025-07-09 04:22:31', 'title': 'And That Is When Bitcoin Normally Peaks', 'viewCount': '36157'}, {'id': 'MTUxNzUyMDczNDk5MTc1MjA3MzQ5OTAwMDE5MA', 'published_at': '2025-07-09 15:04:59', 'title': 'Bitcoin HODL Waves', 'viewCount': '34794'}, {'id': 'MTUxNzUyMTc3NjMxMTc1MjE3NzYzMTAwMDAyOA', 'published_at': '2025-07-10 20:00:31', 'title': 'Bitcoin Metric Analyzer', 'viewCount': '43774'}, {'id': 'MTUxNzUyMjc4NDA5MTc1MjI3ODQwOTAwMDcyNA', 'published_at': '2025-07-12 00:00:09', 'title': 'S&P 500: Accounting for the Money Supply', 'viewCount': '43915'}, {'id': 'MTUxNzUyNDUxMjMwMTc1MjQ1MTIzMDAwMDAxMw', 'published_at': '2025-07-14 00:00:30', 'title': 'Bitcoin: ROI After Halving', 'viewCount': '46220'}, {'id': 'MTUxNzUyNTQ2NjgwMTc1MjU0NjY4MDAwMDM4OA', 'published_at': '2025-07-15 02:31:20', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '98854'}, {'id': 'MTUxNzUyNzMwNDQ0MTc1MjczMDQ0NDAwMDk4Mw', 'published_at': '2025-07-17 05:34:04', 'title': 'ETH / BTC', 'viewCount': '122489'}, {'id': 'MTUxNzUyNzgzODAxMTc1Mjc4MzgwMTAwMDUyOQ', 'published_at': '2025-07-17 20:23:21', 'title': 'ETH/BTC & Altcoins', 'viewCount': '25548'}, {'id': 'MTUxNzUyODE5MTQ3MTc1MjgxOTE0NzAwMDIzMw', 'published_at': '2025-07-18 06:12:27', 'title': 'Bitcoin Dominance', 'viewCount': '103940'}, {'id': 'MTUxNzUyOTA3MDMzMTc1MjkwNzAzMzAwMDkyMg', 'published_at': '2025-07-19 06:37:13', 'title': 'Ethereum: The Butterfly Effect (Part 2)', 'viewCount': '117193'}, {'id': 'MTUxNzUzMDc3NTEyMTc1MzA3NzUxMjAwMDg0MA', 'published_at': '2025-07-21 05:58:32', 'title': 'Ethereum: A Realistic Price Prediction For This Market Cycle', 'viewCount': '243934'}, {'id': 'MTUxNzUzMjA1NTU3MTc1MzIwNTU1NzAwMDA0Ng', 'published_at': '2025-07-22 17:32:37', 'title': 'Investing $1,000 Into Crypto?', 'viewCount': '81250'}, {'id': 'MTUxNzUzMjM4Nzg5MTc1MzIzODc4OTAwMDQ1OQ', 'published_at': '2025-07-23 02:46:29', 'title': 'People Who Converted ETH to BTC', 'viewCount': '34962'}, {'id': 'MTUxNzUzMzk4OTQ0MTc1MzM5ODk0NDAwMDg5MA', 'published_at': '2025-07-24 23:15:44', 'title': 'Bitcoin Dominance', 'viewCount': '94964'}, {'id': 'MTUxNzUzNDE3MzY0MTc1MzQxNzM2NDAwMDkzNw', 'published_at': '2025-07-25 04:22:44', 'title': 'What if their ALT is bleeding against ETH?', 'viewCount': '18829'}, {'id': 'MTUxNzUzNjIwNTA3MTc1MzYyMDUwNzAwMDY5NA', 'published_at': '2025-07-27 12:48:27', 'title': 'ETH / BTC', 'viewCount': '113843'}, {'id': 'MTUxNzUzNzQyMjY3MTc1Mzc0MjI2NzAwMDg1MQ', 'published_at': '2025-07-28 22:37:47', 'title': 'BTC Dominance + ETH Dominance', 'viewCount': '15391'}, {'id': 'MTUxNzUzNzg5OTcxMTc1Mzc4OTk3MTAwMDc3Mw', 'published_at': '2025-07-29 11:52:51', 'title': 'Bitcoin: Has Retail Arrived Yet?', 'viewCount': '88153'}, {'id': 'MTUxNzUzOTIwMjM0MTc1MzkyMDIzNDAwMDg2OQ', 'published_at': '2025-07-31 00:03:54', 'title': 'The Fed Holds Interest Rates at 4.5%', 'viewCount': '70737'}, {'id': 'MTUxNzU0MDA0MjQ5MTc1NDAwNDI0OTAwMDcyOQ', 'published_at': '2025-07-31 23:24:09', 'title': 'What if You See BTC Dominance and ETH Dominance Do This?', 'viewCount': '16165'}, {'id': 'MTUxNzU0MDE5OTUyMTc1NDAxOTk1MjAwMDkwNA', 'published_at': '2025-08-01 03:45:52', 'title': 'Bitcoin: The Beauty of Mathematics (Part 61)', 'viewCount': '48444'}, {'id': 'MTUxNzU0MDkyNTQwMTc1NDA5MjU0MDAwMDM4Ng', 'published_at': '2025-08-01 23:55:40', 'title': 'Unemployment Rate Rises to 4.2%', 'viewCount': '62210'}, {'id': 'MTUxNzU0MTkxNDkzMTc1NDE5MTQ5MzAwMDE5OQ', 'published_at': '2025-08-03 03:24:53', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '125688'}, {'id': 'MTUxNzU0MzA4MTUzMTc1NDMwODE1MzAwMDU1OQ', 'published_at': '2025-08-04 11:49:13', 'title': 'Bitcoin Market Cycles', 'viewCount': '63445'}, {'id': 'MTUxNzU0NDMxNzQ5MTc1NDQzMTc0OTAwMDU3MQ', 'published_at': '2025-08-05 22:09:09', 'title': 'Why Does This Crypto Cycle Feel Different?', 'viewCount': '98884'}, {'id': 'MTUxNzU0NTM1MDM5MTc1NDUzNTAzOTAwMDEzNA', 'published_at': '2025-08-07 02:50:39', 'title': 'Bitcoin Monthly Returns', 'viewCount': '32660'}, {'id': 'MTUxNzU0NjcwMTc4MTc1NDY3MDE3ODAwMDA1Mg', 'published_at': '2025-08-08 16:22:58', 'title': 'How to Fix the Real Estate Market', 'viewCount': '43083'}, {'id': 'MTUxNzU0Nzk3ODgyMTc1NDc5Nzg4MjAwMDk3OA', 'published_at': '2025-08-10 03:51:22', 'title': 'Ethereum Breaks $4k!', 'viewCount': '126024'}, {'id': 'MTUxNzU0ODgxOTk3MTc1NDg4MTk5NzAwMDYxMw', 'published_at': '2025-08-11 03:13:17', 'title': 'Bitcoin Bull Market Support Band', 'viewCount': '74383'}, {'id': 'MTUxNzU0OTQ0MDc5MTc1NDk0NDA3OTAwMDcxNQ', 'published_at': '2025-08-11 20:27:59', 'title': 'Bitcoin Movement', 'viewCount': '18998'}, {'id': 'MTUxNzU0OTcyNDIzMTc1NDk3MjQyMzAwMDUxMw', 'published_at': '2025-08-12 04:20:23', 'title': 'Bitcoin: The Pattern That Historically Ended The Bull Market', 'viewCount': '183427'}, {'id': 'MTUxNzU1MDI5OTA5MTc1NTAyOTkwOTAwMDkyOA', 'published_at': '2025-08-12 20:18:29', 'title': 'Ethereum Surging Towards All Time Highs', 'viewCount': '100220'}, {'id': 'MTUxNzU1MDU3OTIxMTc1NTA1NzkyMTAwMDc4MQ', 'published_at': '2025-08-13 04:05:21', 'title': "Bitcoin's Historical Pattern: Could This Time Be Different?", 'viewCount': '28728'}, {'id': 'MTUxNzU1MTQ4NDU4MTc1NTE0ODQ1ODAwMDk1OQ', 'published_at': '2025-08-14 05:14:18', 'title': "Let's Talk About Altcoins", 'viewCount': '148523'}, {'id': 'MTUxNzU1MTgwODU3MTc1NTE4MDg1NzAwMDAzOQ', 'published_at': '2025-08-14 14:14:17', 'title': 'NFA Live! Bitcoin in 2025', 'viewCount': '47151'}, {'id': 'MTUxNzU1MTk2ODQ4MTc1NTE5Njg0ODAwMDgwNA', 'published_at': '2025-08-14 18:40:48', 'title': 'PPI Surges', 'viewCount': '81069'}, {'id': 'MTUxNzU1Mjk1MzczMTc1NTI5NTM3MzAwMDczMw', 'published_at': '2025-08-15 22:02:53', 'title': 'Bitcoin Dubious Speculation', 'viewCount': '94531'}, {'id': 'MTUxNzU1NDkzMjQ0MTc1NTQ5MzI0NDAwMDQ4Nw', 'published_at': '2025-08-18 05:00:44', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '86610'}, {'id': 'MTUxNzU1NjIyNjgyMTc1NTYyMjY4MjAwMDczOA', 'published_at': '2025-08-19 16:58:02', 'title': 'Bitcoin Dominance', 'viewCount': '92304'}, {'id': 'MTUxNzU1NjI0MjEzMTc1NTYyNDIxMzAwMDA2MA', 'published_at': '2025-08-19 17:23:33', 'title': 'Bitcoin Right Now...', 'viewCount': '34751'}, {'id': 'MTUxNzU1NzE5ODQyMTc1NTcxOTg0MjAwMDc5Mw', 'published_at': '2025-08-20 19:57:22', 'title': 'ETH / BTC', 'viewCount': '84939'}, {'id': 'MTUxNzU1ODI4Njg5MTc1NTgyODY4OTAwMDM4Mg', 'published_at': '2025-08-22 02:11:29', 'title': 'Bitcoin Market Cycles', 'viewCount': '72455'}, {'id': 'MTUxNzU1ODg1NzA1MTc1NTg4NTcwNTAwMDUzOA', 'published_at': '2025-08-22 18:01:45', 'title': 'Bitcoin - Diminishing Returns', 'viewCount': '12860'}, {'id': 'MTUxNzU1ODkxNzEzMTc1NTg5MTcxMzAwMDcxOA', 'published_at': '2025-08-22 19:41:53', 'title': 'Ethereum Eyes All Time Highs', 'viewCount': '106624'}, {'id': 'MTUxNzU2MDk0NzY5MTc1NjA5NDc2OTAwMDI3Ng', 'published_at': '2025-08-25 04:06:09', 'title': 'Ethereum Sets a New All Time High!', 'viewCount': '98500'}, {'id': 'MTUxNzU2MTY4MzU5MTc1NjE2ODM1OTAwMDMyMQ', 'published_at': '2025-08-26 00:32:39', 'title': 'Bitcoin Bull Market Support Band', 'viewCount': '111593'}, {'id': 'MTUxNzU2MjY2MDg1MTc1NjI2NjA4NTAwMDY3OA', 'published_at': '2025-08-27 03:41:25', 'title': 'XRP Risk Metric', 'viewCount': '49059'}, {'id': 'MTUxNzU2MzMwMjUzMTc1NjMzMDI1MzAwMDk2Mg', 'published_at': '2025-08-27 21:30:53', 'title': 'Bitcoin: Dubious Speculation', 'viewCount': '96841'}, {'id': 'MTUxNzU2NDk4OTk4MTc1NjQ5ODk5ODAwMDgyMA', 'published_at': '2025-08-29 20:23:18', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '108268'}, {'id': 'MTUxNzU2NTYwNjAwMTc1NjU2MDYwMDAwMDU4MA', 'published_at': '2025-08-30 13:30:00', 'title': "Ethereum's Surge & What Will Bitcoin Do Next", 'viewCount': '33196'}, {'id': 'MTUxNzU2NjE0MTExMTc1NjYxNDExMTAwMDQyMw', 'published_at': '2025-08-31 04:21:51', 'title': 'Palladium: Dubious Speculation', 'viewCount': '37941'}, {'id': 'MTUxNzU2NjY1NDYzMTc1NjY2NTQ2MzAwMDIzMQ', 'published_at': '2025-08-31 18:37:43', 'title': 'Bitcoin Dominance: The Final Rotation', 'viewCount': '135327'}, {'id': 'MTUxNzU2NzgyODU4MTc1Njc4Mjg1ODAwMDc5OA', 'published_at': '2025-09-02 03:14:18', 'title': 'Bitcoin: The Beauty of Mathematics (Part 62)', 'viewCount': '51065'}, {'id': 'MTUxNzU2ODY5NTA4MTc1Njg2OTUwODAwMDM3Nw', 'published_at': '2025-09-03 03:18:28', 'title': 'Bitcoin: Battle for the Bull Market', 'viewCount': '88822'}, {'id': 'MTUxNzU2OTU1ODc4MTc1Njk1NTg3ODAwMDU5OQ', 'published_at': '2025-09-04 03:17:58', 'title': 'Silver Eyes All Time Highs', 'viewCount': '26313'}, {'id': 'MTUxNzU2OTk0NDM4MTc1Njk5NDQzODAwMDYwMQ', 'published_at': '2025-09-04 14:00:38', 'title': 'NFA Live! Bitcoin in 2025', 'viewCount': '36944'}, {'id': 'MTUxNzU3MTI5NjM3MTc1NzEyOTYzNzAwMDU5MA', 'published_at': '2025-09-06 03:33:57', 'title': 'Unemployment Rate Rises to 4.3%', 'viewCount': '76613'}, {'id': 'MTUxNzU3MjEzOTU3MTc1NzIxMzk1NzAwMDI5Mg', 'published_at': '2025-09-07 02:59:17', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '101843'}, {'id': 'MTUxNzU3MzA0OTM5MTc1NzMwNDkzOTAwMDczMQ', 'published_at': '2025-09-08 04:15:39', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '99070'}, {'id': 'MTUxNzU3NDQ3ODk4MTc1NzQ0Nzg5ODAwMDAzNg', 'published_at': '2025-09-09 19:58:18', 'title': 'Gold Breaks $3600!', 'viewCount': '34773'}, {'id': 'MTUxNzU3NjAzMDI1MTc1NzYwMzAyNTAwMDczMA', 'published_at': '2025-09-11 15:03:45', 'title': 'Inflation Rises to 2.9%', 'viewCount': '57373'}, {'id': 'MTUxNzU3NzA0Nzc3MTc1NzcwNDc3NzAwMDQ4Ng', 'published_at': '2025-09-12 19:19:37', 'title': 'Bitcoin: Dubious Speculation', 'viewCount': '106306'}, {'id': 'MTUxNzU3OTA4Njk4MTc1NzkwODY5ODAwMDMxMw', 'published_at': '2025-09-15 03:58:18', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '68444'}, {'id': 'MTUxNzU3OTkzNzg1MTc1Nzk5Mzc4NTAwMDE2NA', 'published_at': '2025-09-16 03:36:25', 'title': 'Bitcoin: Fear and Greed', 'viewCount': '69798'}, {'id': 'MTUxNzU4MTA4Mjc4MTc1ODEwODI3ODAwMDg3MA', 'published_at': '2025-09-17 11:24:38', 'title': 'Bitcoin: Pre-FOMC', 'viewCount': '80937'}, {'id': 'MTUxNzU4MjI1Mjg5MTc1ODIyNTI4OTAwMDc4Nw', 'published_at': '2025-09-18 19:54:49', 'title': 'Bitcoin: Pre-FOMC', 'viewCount': '15847'}, {'id': 'MTUxNzU4MjU1ODgzMTc1ODI1NTg4MzAwMDQxNA', 'published_at': '2025-09-19 04:24:43', 'title': 'Bitcoin: Post-FOMC', 'viewCount': '98171'}, {'id': 'MTUxNzU4Mzk1ODI5MTc1ODM5NTgyOTAwMDE3Mw', 'published_at': '2025-09-20 19:17:09', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '134828'}, {'id': 'MTUxNzU4NTYxMjc1MTc1ODU2MTI3NTAwMDE2OA', 'published_at': '2025-09-22 17:14:35', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '134966'}, {'id': 'MTUxNzU4NzQwMjA1MTc1ODc0MDIwNTAwMDU0Nw', 'published_at': '2025-09-24 18:56:45', 'title': 'S&P 500: Where to Next?', 'viewCount': '47687'}, {'id': 'MTUxNzU4ODA5MjE1MTc1ODgwOTIxNTAwMDEwMQ', 'published_at': '2025-09-25 14:06:55', 'title': 'NFA Live! Bitcoin in 2025', 'viewCount': '52193'}, {'id': 'MTUxNzU4ODE5NzQzMTc1ODgxOTc0MzAwMDQ2NQ', 'published_at': '2025-09-25 17:02:23', 'title': 'Bitcoin: Wake Me Up When September Ends', 'viewCount': '94506'}, {'id': 'MTUxNzU4OTQ1MDQzMTc1ODk0NTA0MzAwMDczMA', 'published_at': '2025-09-27 03:50:43', 'title': 'Silver Approaches All Time Highs', 'viewCount': '25646'}, {'id': 'MTUxNzU5MTEwMjQ5MTc1OTExMDI0OTAwMDEwMg', 'published_at': '2025-09-29 01:44:09', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '105593'}, {'id': 'MTUxNzU5MTkwMTQ3MTc1OTE5MDE0NzAwMDM0Mw', 'published_at': '2025-09-29 23:55:47', 'title': 'Bitcoin Dominance: The Final Rotation is About To Begin', 'viewCount': '170490'}, {'id': 'MTUxNzU5MzI1MTMxMTc1OTMyNTEzMTAwMDQ1MA', 'published_at': '2025-10-01 13:25:31', 'title': 'The US Government Shutdown', 'viewCount': '91506'}, {'id': 'MTUxNzU5NDEzNjU5MTc1OTQxMzY1OTAwMDUwNQ', 'published_at': '2025-10-02 14:00:59', 'title': 'Bitcoin: The Beauty of Mathematics (Part 63)', 'viewCount': '65135'}, {'id': 'MTUxNzU5NDk4MTg4MTc1OTQ5ODE4ODAwMDQwNQ', 'published_at': '2025-10-03 13:29:48', 'title': 'The Labor Market and Bitcoin', 'viewCount': '70552'}, {'id': 'MTUxNzU5NzIwMjA1MTc1OTcyMDIwNTAwMDgyMg', 'published_at': '2025-10-06 03:10:05', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '122483'}, {'id': 'MTUxNzU5NzkxODUzMTc1OTc5MTg1MzAwMDc5OQ', 'published_at': '2025-10-06 23:04:13', 'title': 'Gold Breaks $3900! What Next?', 'viewCount': '53733'}, {'id': 'MTUxNzU5ODY2ODQzMTc1OTg2Njg0MzAwMDMxNQ', 'published_at': '2025-10-07 19:54:03', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '134537'}, {'id': 'MTUxNzU5OTg0NjU0MTc1OTk4NDY1NDAwMDczMw', 'published_at': '2025-10-09 04:37:34', 'title': 'Palladium: Dubious Speculation', 'viewCount': '33389'}, {'id': 'MTUxNzYwMTAxMDcyMTc2MDEwMTA3MjAwMDgwMw', 'published_at': '2025-10-10 12:57:52', 'title': 'Bitcoin Dominance: The Final Rotation is already Happening', 'viewCount': '111700'}, {'id': 'MTUxNzYwMTE5NzE5MTc2MDExOTcxOTAwMDY1OQ', 'published_at': '2025-10-10 18:08:39', 'title': 'Comparing Bitcoin &  Altcoins', 'viewCount': '16957'}, {'id': 'MTUxNzYwMTQ0MjE2MTc2MDE0NDIxNjAwMDk3NQ', 'published_at': '2025-10-11 00:56:56', 'title': 'It Might Seem Counterintuitive To...', 'viewCount': '33591'}, {'id': 'MTUxNzYwMTQ3MDM4MTc2MDE0NzAzODAwMDYwMg', 'published_at': '2025-10-11 01:43:58', 'title': 'See you at BTC Amsterdam!', 'viewCount': '10784'}, {'id': 'MTUxNzYwMTU1NDc3MTc2MDE1NTQ3NzAwMDgxNA', 'published_at': '2025-10-11 04:04:37', 'title': 'Crypto Damage Report', 'viewCount': '276160'}, {'id': 'MTUxNzYwMjM4NTk3MTc2MDIzODU5NzAwMDE2OA', 'published_at': '2025-10-12 03:09:57', 'title': 'Ethereum Drops 30% - Now What?', 'viewCount': '189073'}, {'id': 'MTUxNzYwMzMzMDE0MTc2MDMzMzAxNDAwMDk3MQ', 'published_at': '2025-10-13 05:23:34', 'title': 'Ethereum to $5k?', 'viewCount': '120056'}, {'id': 'MTUxNzYwNDE1NzE5MTc2MDQxNTcxOTAwMDYxMQ', 'published_at': '2025-10-14 04:21:59', 'title': 'Altcoins Hit 0.29', 'viewCount': '171209'}, {'id': 'MTUxNzYwNTAyNjU3MTc2MDUwMjY1NzAwMDQyMg', 'published_at': '2025-10-15 04:30:57', 'title': 'Altcoins and the end of QT', 'viewCount': '230271'}, {'id': 'MTUxNzYwNTAzNDE4MTc2MDUwMzQxODAwMDQ0NA', 'published_at': '2025-10-15 04:43:38', 'title': 'This Chart Alone Was Able To Keep Me On The Right Side Of Bitcoin Dominance', 'viewCount': '21189'}, {'id': 'MTUxNzYwNTgyMTk4MTc2MDU4MjE5ODAwMDgzNA', 'published_at': '2025-10-16 02:36:38', 'title': 'Gold Breaks $4200!', 'viewCount': '71463'}, {'id': 'MTUxNzYwNjIyNDc1MTc2MDYyMjQ3NTAwMDY0Mw', 'published_at': '2025-10-16 13:47:55', 'title': 'NFA Live: Bitcoin in 2025', 'viewCount': '85519'}, {'id': 'MTUxNzYwNjcwMTU4MTc2MDY3MDE1ODAwMDYwMQ', 'published_at': '2025-10-17 03:02:38', 'title': 'What I Said About Gold 5 Years Ago & What That Could Mean Now', 'viewCount': '26895'}, {'id': 'MTUxNzYwNzE3MDYzMTc2MDcxNzA2MzAwMDg4OA', 'published_at': '2025-10-17 16:04:23', 'title': 'Silver Reaches All Time Highs', 'viewCount': '45017'}, {'id': 'MTUxNzYwNzU4NjUwMTc2MDc1ODY1MDAwMDQzMQ', 'published_at': '2025-10-18 03:37:30', 'title': "Silver ATH-And What's Next?", 'viewCount': '14666'}, {'id': 'MTUxNzYwODk5MDY3MTc2MDg5OTA2NzAwMDg3Mw', 'published_at': '2025-10-19 18:37:47', 'title': 'Bitcoin Market Cycles', 'viewCount': '191343'}, {'id': 'MTUxNzYwOTk3MDI2MTc2MDk5NzAyNjAwMDU3OQ', 'published_at': '2025-10-20 21:50:26', 'title': 'Palladium Hits $1600', 'viewCount': '24872'}, {'id': 'MTUxNzYxMDczOTc3MTc2MTA3Mzk3NzAwMDkzNg', 'published_at': '2025-10-21 19:12:57', 'title': 'Bitcoin Dominance: The Final Rotation Continues', 'viewCount': '140127'}, {'id': 'MTUxNzYxMTU5NDY3MTc2MTE1OTQ2NzAwMDA2OA', 'published_at': '2025-10-22 18:57:47', 'title': 'See you in Amsterdam!', 'viewCount': '9110'}, {'id': 'MTUxNzYxMTk0OTA2MTc2MTE5NDkwNjAwMDg2Mg', 'published_at': '2025-10-23 04:48:26', 'title': 'Bitcoin: Bull Market Support Band', 'viewCount': '151030'}, {'id': 'MTUxNzYxMjc4NjUxMTc2MTI3ODY1MTAwMDMzMw', 'published_at': '2025-10-24 04:04:11', 'title': 'Ethereum: Dubious Speculation', 'viewCount': '137343'}, {'id': 'MTUxNzYxMzY1ODI1MTc2MTM2NTgyNTAwMDg1MA', 'published_at': '2025-10-25 04:17:05', 'title': 'Inflation Rises to 3.0%', 'viewCount': '86412'}, {'id': 'MTUxNzYxNDA5MjMwMTc2MTQwOTIzMDAwMDUxMA', 'published_at': '2025-10-25 16:20:30', 'title': 'This is Where It Gets Interesting', 'viewCount': '42871'}, {'id': 'MTUxNzYxNDUxNTI4MTc2MTQ1MTUyODAwMDAzOA', 'published_at': '2025-10-26 04:05:28', 'title': 'Bitcoin Dominance: The Grueling Final Rotation', 'viewCount': '128531'}, {'id': 'MTUxNzYxNTQxMjc2MTc2MTU0MTI3NjAwMDYwMA', 'published_at': '2025-10-27 05:01:16', 'title': 'Bitcoin Closes Above Its Bull Market Support Band', 'viewCount': '128063'}, {'id': 'MTUxNzYxNzExMzcxMTc2MTcxMTM3MTAwMDc5Ng', 'published_at': '2025-10-29 04:16:11', 'title': 'Pre-FOMC', 'viewCount': '100233'}];
+
+            // 准备图表数据
+            var viewCountXAxisData = ['2025-05-19', '2025-05-20', '2025-05-21', '2025-05-21', '2025-05-22', '2025-05-22', '2025-05-23', '2025-05-23', '2025-05-26', '2025-05-26', '2025-05-31', '2025-06-02', '2025-06-04', '2025-06-05', '2025-06-05', '2025-06-06', '2025-06-07', '2025-06-08', '2025-06-09', '2025-06-12', '2025-06-13', '2025-06-13', '2025-06-14', '2025-06-16', '2025-06-18', '2025-06-18', '2025-06-19', '2025-06-20', '2025-06-22', '2025-06-23', '2025-06-24', '2025-06-25', '2025-06-26', '2025-06-27', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-02', '2025-07-03', '2025-07-04', '2025-07-06', '2025-07-07', '2025-07-08', '2025-07-09', '2025-07-09', '2025-07-10', '2025-07-12', '2025-07-14', '2025-07-15', '2025-07-17', '2025-07-17', '2025-07-18', '2025-07-19', '2025-07-21', '2025-07-22', '2025-07-23', '2025-07-24', '2025-07-25', '2025-07-27', '2025-07-28', '2025-07-29', '2025-07-31', '2025-07-31', '2025-08-01', '2025-08-01', '2025-08-03', '2025-08-04', '2025-08-05', '2025-08-07', '2025-08-08', '2025-08-10', '2025-08-11', '2025-08-11', '2025-08-12', '2025-08-12', '2025-08-13', '2025-08-14', '2025-08-14', '2025-08-14', '2025-08-15', '2025-08-18', '2025-08-19', '2025-08-19', '2025-08-20', '2025-08-22', '2025-08-22', '2025-08-22', '2025-08-25', '2025-08-26', '2025-08-27', '2025-08-27', '2025-08-29', '2025-08-30', '2025-08-31', '2025-08-31', '2025-09-02', '2025-09-03', '2025-09-04', '2025-09-04', '2025-09-06', '2025-09-07', '2025-09-08', '2025-09-09', '2025-09-11', '2025-09-12', '2025-09-15', '2025-09-16', '2025-09-17', '2025-09-18', '2025-09-19', '2025-09-20', '2025-09-22', '2025-09-24', '2025-09-25', '2025-09-25', '2025-09-27', '2025-09-29', '2025-09-29', '2025-10-01', '2025-10-02', '2025-10-03', '2025-10-06', '2025-10-06', '2025-10-07', '2025-10-09', '2025-10-10', '2025-10-10', '2025-10-11', '2025-10-11', '2025-10-11', '2025-10-12', '2025-10-13', '2025-10-14', '2025-10-15', '2025-10-15', '2025-10-16', '2025-10-16', '2025-10-17', '2025-10-17', '2025-10-18', '2025-10-19', '2025-10-20', '2025-10-21', '2025-10-22', '2025-10-23', '2025-10-24', '2025-10-25', '2025-10-25', '2025-10-26', '2025-10-27', '2025-10-29'];
+            var viewCountSeriesData = ['70137', '99318', '61042', '124836', '50443', '7336', '5261', '102870', '79421', '37709', '85560', '78106', '34176', '43176', '89946', '17223', '14604', '44335', '85343', '113536', '39202', '21200', '120497', '34618', '42999', '10487', '20303', '76784', '70218', '83064', '52365', '70318', '38338', '130841', '68199', '63889', '50825', '14837', '53835', '110376', '73648', '41603', '33150', '36157', '34794', '43774', '43915', '46220', '98854', '122489', '25548', '103940', '117193', '243934', '81250', '34962', '94964', '18829', '113843', '15391', '88153', '70737', '16165', '48444', '62210', '125688', '63445', '98884', '32660', '43083', '126024', '74383', '18998', '183427', '100220', '28728', '148523', '47151', '81069', '94531', '86610', '92304', '34751', '84939', '72455', '12860', '106624', '98500', '111593', '49059', '96841', '108268', '33196', '37941', '135327', '51065', '88822', '26313', '36944', '76613', '101843', '99070', '34773', '57373', '106306', '68444', '69798', '80937', '15847', '98171', '134828', '134966', '47687', '52193', '94506', '25646', '105593', '170490', '91506', '65135', '70552', '122483', '53733', '134537', '33389', '111700', '16957', '33591', '10784', '276160', '189073', '120056', '171209', '230271', '21189', '71463', '85519', '26895', '45017', '14666', '191343', '24872', '140127', '9110', '151030', '137343', '86412', '42871', '128531', '128063', '100233'];
+            var subscriberCountXAxisData = ['2025-09-26', '2025-09-27', '2025-09-28', '2025-09-29', '2025-09-30', '2025-10-01', '2025-10-02', '2025-10-03', '2025-10-04', '2025-10-05', '2025-10-06', '2025-10-07', '2025-10-08', '2025-10-09', '2025-10-10', '2025-10-11', '2025-10-12', '2025-10-13', '2025-10-14', '2025-10-15', '2025-10-16', '2025-10-17', '2025-10-18', '2025-10-19', '2025-10-19', '2025-10-20', '2025-10-20', '2025-10-21', '2025-10-22', '2025-10-23', '2025-10-24', '2025-10-25', '2025-10-26', '2025-10-27', '2025-10-28', '2025-10-29'];
+            var subscriberCountSeriesData = [264, 895, 975, 267, 281, 333, 667, 500, 400, 100, 333, 333, 234, 33, 67, 3001, 3000, 999, 2000, 1344, 656, 971, 29, 500, 1000, 930, 430, 516, 54, 384, 616, 1160, 972, 190, 364, 364];
+
+            // 定义一个函数来改变图表类型
+            function changeChartType(chartId, type, typeText) {
+                // 根据 ID 获取 ECharts 实例
+                var chartInstance = echarts.getInstanceByDom(document.getElementById(chartId));
+                if (chartInstance) {
+                    // 获取当前配置，并进行深拷贝，避免直接修改原始配置
+                    var currentOption = chartInstance.getOption();
+                    var newOption = JSON.parse(JSON.stringify(currentOption));
+
+                    // 仅修改 series 的 type
+                    newOption.series[0].type = type;
+
+                    // 根据图表类型调整特定配置
+                    if (type === 'line') {
+                        // 折线图
+                        newOption.series[0].smooth = true;
+                        newOption.series[0].symbol = 'circle';
+                        newOption.series[0].symbolSize = 8;
+                        newOption.series[0].itemStyle = {
+                            color: '#6A5ACD'
+                        };
+                    } else {
+                        // 柱形图
+                        newOption.series[0].smooth = false;
+                        newOption.series[0].symbol = 'none';
+                        newOption.series[0].symbolSize = 0;
+
+                        // 重新设置柱形图的动态颜色函数
+                        if (chartId === 'viewCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 500000) return '#8B0000';  // 极高热
+                                if (value > 200000) return '#DC143C';  // 超高热
+                                if (value > 100000) return '#FF4500';  // 高热
+                                if (value > 50000) return '#FF8C00';  // 中高热
+                                if (value > 20000) return '#FFA500';  // 中热
+                                if (value > 10000) return '#FFD700';  // 中低热
+                                if (value > 5000) return '#32CD32';  // 一般
+                                if (value > 1000)  return '#1E90FF';  // 较低
+                                return '#B0C4DE';     // 冷门
+                            };
+                        } else if (chartId === 'subscriberCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 1000) return '#FF4500';  // 高热
+                                if (value > 500) return '#FF8C00';  // 中热
+                                if (value > 200) return '#32CD32';   // 一般
+                                return '#1E90FF';                     // 较低
+                            };
+                        }
+                    }
+
+                    chartInstance.setOption(newOption, true);
+                    document.getElementById(chartId + 'Type').innerText = typeText;
+                }
+            }
+
+            // 初始配置和渲染图表
+            var viewCountOption = {
+                title: {
+                    text: '每日视频播放量统计',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        var dataIndex = params[0].dataIndex;
+                        var videoItem = viewCountData[dataIndex];
+                        return '视频标题: ' + videoItem.title + '<br/>' +
+                               '发布日期: ' + videoItem.published_at + '<br/>' +
+                               '播放量: ' + videoItem.viewCount.toLocaleString();
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: viewCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '发布日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '播放量',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    },
+                    axisLabel: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: '播放量',
+                    type: 'bar',
+                    data: viewCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 500000) return '#8B0000';
+                            if (value > 200000) return '#DC143C';
+                            if (value > 100000) return '#FF4500';
+                            if (value > 50000) return '#FF8C00';
+                            if (value > 20000) return '#FFA500';
+                            if (value > 10000) return '#FFD700';
+                            if (value > 5000) return '#32CD32';
+                            if (value > 1000)  return '#1E90FF';
+                            return '#B0C4DE';
+                        }
+                    },
+                    label: {
+                        show: false,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value.toLocaleString();
+                        }
+                    }
+                }],
+                dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            viewCountChart.setOption(viewCountOption);
+
+            var subscriberCountOption = {
+                title: {
+                    text: '每日新增订阅数',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: subscriberCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '新增订阅数',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    }
+                },
+                series: [{
+                    name: '新增订阅数',
+                    type: 'bar',
+                    data: subscriberCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 1000) return '#FF4500';
+                            if (value > 500) return '#FF8C00';
+                            if (value > 200) return '#32CD32';
+                            return '#1E90FF';
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value;
+                        }
+                    }
+                }],
+                 dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            subscriberCountChart.setOption(subscriberCountOption);
+
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                viewCountChart.resize();
+                subscriberCountChart.resize();
+            });
+        </script>
+    </body>
+    </html>
