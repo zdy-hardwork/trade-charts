@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <title>Youtube频道：提阿非羅大人TiaBTC</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <style>
+            .chart-container {
+                width: 1000px;
+                height: 600px;
+                margin: 30px auto;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            .stats-header {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            .chart-controls {
+                 /* 使用 Flexbox 布局 */
+                display: flex;
+                /* 将子元素对齐到两端，第一个在左，最后一个在右 */
+                justify-content: space-between;
+                align-items: center; /* 垂直居中对齐 */
+                margin-bottom: 10px;
+                padding: 0 5px; /* 添加一些内边距，防止贴边 */
+            }
+            .chart-controls button {
+                padding: 5px 10px;
+                cursor: pointer;
+                border: 1px solid #ccc;
+                background-color: #f9f9f9;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stats-header">Youtube频道：提阿非羅大人TiaBTC</div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="viewCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('viewCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('viewCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="viewCountChart"></div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-controls">
+                <span id="subscriberCountChartType">柱形图</span>
+                <div>
+                    <button onclick="changeChartType('subscriberCountChart', 'bar', '柱形图')">柱形图</button>
+                    <button onclick="changeChartType('subscriberCountChart', 'line', '折线图')">折线图</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 30px);" id="subscriberCountChart"></div>
+        </div>
+
+        <script>
+            // 初始化ECharts实例
+            var viewCountChartDom = document.getElementById('viewCountChart');
+            var viewCountChart = echarts.init(viewCountChartDom);
+            var subscriberCountChartDom = document.getElementById('subscriberCountChart');
+            var subscriberCountChart = echarts.init(subscriberCountChartDom);
+
+            // 使用Python传递过来的JSON数据
+            var viewCountData = [{'id': 'MTUxNzQ2NTIwOTY4MTc0NjUyMDk2ODAwMDczMg', 'published_at': '2025-05-06 08:42:48', 'title': 'BTC回調開始？趨勢沒走壞，但可能跌到……？', 'viewCount': '10511'}, {'id': 'MTUxNzQ2NjM1NDgwMTc0NjYzNTQ4MDAwMDA5Nw', 'published_at': '2025-05-07 16:31:20', 'title': 'BTC空頭掉入陷阱？小級別轉強！98000可期？', 'viewCount': '8618'}, {'id': 'MTUxNzQ2NzIwMzYwMTc0NjcyMDM2MDAwMDM0NA', 'published_at': '2025-05-08 16:06:00', 'title': 'BTC回十萬！繼續漲？還沒完！ETH上2000，繼續走強？！', 'viewCount': '14484'}, {'id': 'MTUxNzQ2ODEyMTAyMTc0NjgxMjEwMjAwMDM0NQ', 'published_at': '2025-05-09 17:35:02', 'title': 'BTC重奪十萬！去新高？ETH暴漲！Trump有機會？', 'viewCount': '13329'}, {'id': 'MTUxNzQ3MDczNDY0MTc0NzA3MzQ2NDAwMDQ3OA', 'published_at': '2025-05-12 18:11:04', 'title': 'BTC新高一步之遙？105000受挫！BTC、ETH、SPX、TSLA分析！', 'viewCount': '12134'}, {'id': 'MTUxNzQ3MTU4NjgyMTc0NzE1ODY4MjAwMDkyNw', 'published_at': '2025-05-13 17:51:22', 'title': 'BTC盤整後，是漲是跌？漲到多少可能回調？ETH仍強勢！', 'viewCount': '10511'}, {'id': 'MTUxNzQ3MjQ1MDQ1MTc0NzI0NTA0NTAwMDQ1MQ', 'published_at': '2025-05-14 17:50:45', 'title': 'BTC遇阻？盤起來了！還去新高嗎？ETH去2800？', 'viewCount': '9824'}, {'id': 'MTUxNzQ3MzMyMTQxMTc0NzMzMjE0MTAwMDAzOA', 'published_at': '2025-05-15 18:02:21', 'title': 'BTC未見頹勢！繼續上漲？資金費降低！ETH更強？', 'viewCount': '8866'}, {'id': 'MTUxNzQ3NDE5MTI1MTc0NzQxOTEyNTAwMDk5MQ', 'published_at': '2025-05-16 18:12:05', 'title': 'BTC五浪見頂？還能不能新高？至少……等一個突破！', 'viewCount': '12391'}, {'id': 'MTUxNzQ3NjgxNzU3MTc0NzY4MTc1NzAwMDcyMw', 'published_at': '2025-05-19 19:09:17', 'title': '比特幣107000假突破！沒人買了？賣方增多！短空？', 'viewCount': '10969'}, {'id': 'MTUxNzQ3NzYzNTg5MTc0Nzc2MzU4OTAwMDYxMw', 'published_at': '2025-05-20 17:53:09', 'title': 'BTC看漲背離？太多人做空！爆空頭，去新高？川普幣縮量盤整！', 'viewCount': '10023'}, {'id': 'MTUxNzQ3ODQ4MzM2MTc0Nzg0ODMzNjAwMDU0NA', 'published_at': '2025-05-21 17:25:36', 'title': '比特幣11萬！差一點新高！是否跌回？$Trump還不錯！', 'viewCount': '11079'}, {'id': 'MTUxNzQ3OTQzNjYzMTc0Nzk0MzY2MzAwMDMzMg', 'published_at': '2025-05-22 19:54:23', 'title': '111111！BTC新高！突破才是開始？繼續漲？如果跌回……！', 'viewCount': '11817'}, {'id': 'MTUxNzQ4MDI0NzUyMTc0ODAyNDc1MjAwMDEzNw', 'published_at': '2025-05-23 18:25:52', 'title': 'BTC假突破！看跌吞沒？見頂了？今天日線很重要！', 'viewCount': '14906'}, {'id': 'MTUxNzQ4Mjg0NTQ1MTc0ODI4NDU0NTAwMDczMw', 'published_at': '2025-05-26 18:35:45', 'title': 'BTC假突破！11萬見頂了？一些危險信號！', 'viewCount': '12669'}, {'id': 'MTUxNzQ4Mzc1NjY2MTc0ODM3NTY2NjAwMDgyMw', 'published_at': '2025-05-27 19:54:26', 'title': 'BTC不肯跌！危險解除？11萬反復測試！ETH去2800！？', 'viewCount': '10377'}, {'id': 'MTUxNzQ4NDY3NTc5MTc0ODQ2NzU3OTAwMDcxMA', 'published_at': '2025-05-28 21:26:19', 'title': 'BTC回抽不過！假突破後，11萬難再上？ETH不跌！？', 'viewCount': '9885'}, {'id': 'MTUxNzQ4NTQwODY0MTc0ODU0MDg2NDAwMDY0Ng', 'published_at': '2025-05-29 17:47:44', 'title': 'BTC緩跌！假突破後，回抽不過！ETH也假突破？？', 'viewCount': '9678'}, {'id': 'MTUxNzQ4NjI5ODQ4MTc0ODYyOTg0ODAwMDI0Mw', 'published_at': '2025-05-30 18:30:48', 'title': 'BTC順跌！103500，絲毫不反彈？ETH假突破確認？', 'viewCount': '13710'}, {'id': 'MTUxNzQ4ODg2OTY2MTc0ODg4Njk2NjAwMDMyNg', 'published_at': '2025-06-02 17:56:06', 'title': 'BTC看跌周線！跌到哪反彈？10萬能撐住？ETH有希望嗎？', 'viewCount': '11480'}, {'id': 'MTUxNzQ4OTc0NzI3MTc0ODk3NDcyNzAwMDY4Ng', 'published_at': '2025-06-03 18:18:47', 'title': '比特幣106000受阻！還有一跌？到哪有支撐？ETH還行？', 'viewCount': '10237'}, {'id': 'MTUxNzQ5MDU5MTg2MTc0OTA1OTE4NjAwMDI4MA', 'published_at': '2025-06-04 17:46:26', 'title': 'BTC下跌五浪？準備做多！？ETH遇阻！上不去？', 'viewCount': '10661'}, {'id': 'MTUxNzQ5MTQ3MjA1MTc0OTE0NzIwNTAwMDA4OA', 'published_at': '2025-06-05 18:13:25', 'title': 'BTC急跌！前低難保？超跌反彈做多！？ETH去多少？', 'viewCount': '14696'}, {'id': 'MTUxNzQ5MjM1MTY3MTc0OTIzNTE2NzAwMDE4Nw', 'published_at': '2025-06-06 18:39:27', 'title': 'BTC觸底！當然做多！馬斯克川普吵架，促成五浪見底！三浪反彈來了？', 'viewCount': '15563'}, {'id': 'MTUxNzQ5NDk0Njg2MTc0OTQ5NDY4NjAwMDg0OQ', 'published_at': '2025-06-09 18:44:46', 'title': '這反彈，一眨眼就十萬八千！BTC莫非還有新高？目標位是？', 'viewCount': '13319'}, {'id': 'MTUxNzQ5NTgxMzU0MTc0OTU4MTM1NDAwMDE4Mw', 'published_at': '2025-06-10 18:49:14', 'title': 'BTC反彈11萬！毫無回調？ETH強勢啟動，繼續漲？', 'viewCount': '11862'}, {'id': 'MTUxNzQ5NjY2OTYxMTc0OTY2Njk2MTAwMDM0NQ', 'published_at': '2025-06-11 18:36:01', 'title': 'BTC受阻回調！還漲回來？ETH新一輪上漲？', 'viewCount': '11837'}, {'id': 'MTUxNzQ5NzU3OTA4MTc0OTc1NzkwODAwMDA4Mg', 'published_at': '2025-06-12 19:51:48', 'title': 'BTC下跌！缺口補上了！跌到位了？ETH假突破？', 'viewCount': '13025'}, {'id': 'MTUxNzQ5ODQxNTY3MTc0OTg0MTU2NzAwMDgxMQ', 'published_at': '2025-06-13 19:06:07', 'title': 'BTC戰爭急跌！B浪？即將C浪上漲！？ETH相對底部？', 'viewCount': '15010'}, {'id': 'MTUxNzUwMDk1MDY3MTc1MDA5NTA2NzAwMDUxMA', 'published_at': '2025-06-16 17:31:07', 'title': 'BTC觸底反彈！C浪開啟！漲去新高？ETH去2900？', 'viewCount': '12447'}, {'id': 'MTUxNzUwMTg2NDM0MTc1MDE4NjQzNDAwMDYxNA', 'published_at': '2025-06-17 18:53:54', 'title': 'BTC急跌！世界大戰？有人拋售現貨！反彈還有嗎？', 'viewCount': '14086'}, {'id': 'MTUxNzUwMjcyNzEzMTc1MDI3MjcxMzAwMDI5Nw', 'published_at': '2025-06-18 18:51:53', 'title': 'BTC看漲背離！最好再跌一點？跌到哪？ETH一樣！', 'viewCount': '11292'}, {'id': 'MTUxNzUwMzU5MjI2MTc1MDM1OTIyNjAwMDM1Nw', 'published_at': '2025-06-19 18:53:46', 'title': 'BTC先得跌！然後才漲？空頭已擁擠，看漲背離！', 'viewCount': '10720'}, {'id': 'MTUxNzUwNDQ1ODk5MTc1MDQ0NTg5OTAwMDUwNA', 'published_at': '2025-06-20 18:58:19', 'title': 'BTC急跌！前低跌破！跌到位了嗎？還能漲嗎？ETH呢', 'viewCount': '14799'}, {'id': 'MTUxNzUwNjIxNDE3MTc1MDYyMTQxNzAwMDAyMQ', 'published_at': '2025-06-22 19:43:37', 'title': '三戰恐慌！比特幣跌破10萬！賣掉一切？是危機，也是機會！', 'viewCount': '15136'}, {'id': 'MTUxNzUwNzA1MDc3MTc1MDcwNTA3NzAwMDQ5Nw', 'published_at': '2025-06-23 18:57:57', 'title': '比特幣強反彈！戰爭開打，做多BTC？以太ETH有好機會！', 'viewCount': '12943'}, {'id': 'MTUxNzUwNzg3ODk4MTc1MDc4Nzg5ODAwMDExOQ', 'published_at': '2025-06-24 17:58:18', 'title': 'BTC強看漲吞沒！比特幣再去11萬？做空嗎？ETH剛開始！', 'viewCount': '14983'}, {'id': 'MTUxNzUwODc2NzkxMTc1MDg3Njc5MTAwMDgxOQ', 'published_at': '2025-06-25 18:39:51', 'title': 'BTC不回調？做多的越來越多！上方有吸引力？ETH呢', 'viewCount': '11838'}, {'id': 'MTUxNzUwOTYxOTYyMTc1MDk2MTk2MjAwMDc4NA', 'published_at': '2025-06-26 18:19:22', 'title': 'BTC停住了！懸浮中，向上還是向下？ETH偏弱！', 'viewCount': '10569'}, {'id': 'MTUxNzUxMDQ4ODA0MTc1MTA0ODgwNDAwMDMxOQ', 'published_at': '2025-06-27 18:26:44', 'title': 'BTC不上不下！漲勢全無？比特幣在做什麼？我們做什麼？', 'viewCount': '12420'}, {'id': 'MTUxNzUxMzA3NzE2MTc1MTMwNzcxNjAwMDU1MA', 'published_at': '2025-06-30 18:21:56', 'title': '比特幣多空雙殺！清掉止損後，到底去哪？BTC、ETH分析！', 'viewCount': '10647'}, {'id': 'MTUxNzUxMzkzMTQyMTc1MTM5MzE0MjAwMDQ4NA', 'published_at': '2025-07-01 18:05:42', 'title': 'BTC看跌吞沒！是見頂了？還是仍在盤整中？成交量萎縮！', 'viewCount': '10974'}, {'id': 'MTUxNzUxNDgxODY5MTc1MTQ4MTg2OTAwMDA2Nw', 'published_at': '2025-07-02 18:44:29', 'title': 'BTC臨近新高！三角突破做多？留意轉空！ETH去2900？', 'viewCount': '11946'}, {'id': 'MTUxNzUxNTY0NTMyMTc1MTU2NDUzMjAwMDYxNw', 'published_at': '2025-07-03 17:42:12', 'title': '比特幣11萬！馬上新高？突破做多，還是準備做空？eth呢', 'viewCount': '11080'}, {'id': 'MTUxNzUxNjU0MjIwMTc1MTY1NDIyMDAwMDY2OA', 'published_at': '2025-07-04 18:37:00', 'title': 'BTC觸頂110000？前高摸一下就跌！周線背離走出來？', 'viewCount': '12619'}, {'id': 'MTUxNzUxOTEyODA1MTc1MTkxMjgwNTAwMDM2Nw', 'published_at': '2025-07-07 18:26:45', 'title': '比特幣11萬太難！真上不去了？BTC、ETH分析！', 'viewCount': '11448'}, {'id': 'MTUxNzUxOTk3MjY2MTc1MTk5NzI2NjAwMDEyNA', 'published_at': '2025-07-08 17:54:26', 'title': '比特幣蓄勢待發！流動性在哪？ETH漲到這做空？', 'viewCount': '10323'}, {'id': 'MTUxNzUyMDg0MzY5MTc1MjA4NDM2OTAwMDk5Ng', 'published_at': '2025-07-09 18:06:09', 'title': 'BTC盤整向上！空頭不耐煩，資金費又負了？ETH穩穩漲！', 'viewCount': '11136'}, {'id': 'MTUxNzUyMTcxMzI4MTc1MjE3MTMyODAwMDQyNw', 'published_at': '2025-07-10 18:15:28', 'title': '113666！BTC歷史新高！比特幣VCP突破？見好就收？還是繼續沖？ETH、Trump漲漲漲！', 'viewCount': '15595'}, {'id': 'MTUxNzUyMjU4MDY1MTc1MjI1ODA2NTAwMDg4NA', 'published_at': '2025-07-11 18:21:05', 'title': 'BTC歷史新高！有人恐高，有人追高，我計劃這樣！ETH和山寨跟漲！', 'viewCount': '18860'}, {'id': 'MTUxNzUyNTE4OTQ1MTc1MjUxODk0NTAwMDIzOA', 'published_at': '2025-07-14 18:49:05', 'title': '比特幣12萬！忍不住追高？小心回調！BTC、ETH多空機會！', 'viewCount': '14169'}, {'id': 'MTUxNzUyNjAzNjc1MTc1MjYwMzY3NTAwMDI1NA', 'published_at': '2025-07-15 18:21:15', 'title': 'BTC重挫！看跌吞沒？巨量追多，除非清掉，否則難漲！ETH接棒上漲？', 'viewCount': '15771'}, {'id': 'MTUxNzUyNjg2NzUxMTc1MjY4Njc1MTAwMDU4MA', 'published_at': '2025-07-16 17:25:51', 'title': '大餅漲完以太漲！ETH去4100？之後山寨漲？', 'viewCount': '13670'}, {'id': 'MTUxNzUyNzc1MDQwMTc1Mjc3NTA0MDAwMDY2Ng', 'published_at': '2025-07-17 17:57:20', 'title': 'BTC將回調？ETH將新高?! BTC和ETH，分別去哪裡？', 'viewCount': '13014'}, {'id': 'MTUxNzUyODYyMjYxMTc1Mjg2MjI2MTAwMDA3NA', 'published_at': '2025-07-18 18:11:01', 'title': 'BTC難漲！ETH沖高，一步去4100？山寨有機會？！', 'viewCount': '16087'}, {'id': 'MTUxNzUzMTIzMzA3MTc1MzEyMzMwNzAwMDg2Ng', 'published_at': '2025-07-21 18:41:47', 'title': 'BTC還跌？ETH還漲！目標位多少？山寨熱度起來了！', 'viewCount': '14565'}, {'id': 'MTUxNzUzMjA5OTQ4MTc1MzIwOTk0ODAwMDU2MA', 'published_at': '2025-07-22 18:45:48', 'title': 'BTC穩定盤整！ETH漲不動了嗎？蓄勢中……', 'viewCount': '11890'}, {'id': 'MTUxNzUzMjkzNjU4MTc1MzI5MzY1ODAwMDY5OA', 'published_at': '2025-07-23 18:00:58', 'title': 'BTC看漲吞沒卻下跌？ETH初現大陰線，漲到頭了？', 'viewCount': '14099'}, {'id': 'MTUxNzUzMzgwMDY2MTc1MzM4MDA2NjAwMDU0Ng', 'published_at': '2025-07-24 18:01:06', 'title': 'BTC極致盤整！醞釀大波動？ETH強勢回彈，突破趨勢線！', 'viewCount': '11036'}, {'id': 'MTUxNzUzNDY4NTM0MTc1MzQ2ODUzNDAwMDkwMg', 'published_at': '2025-07-25 18:35:34', 'title': 'BTC跌到位！還跌嗎？可以做多嗎？ETH漲完了？', 'viewCount': '13895'}, {'id': 'MTUxNzUzNzI5MTAzMTc1MzcyOTEwMzAwMDU4Ng', 'published_at': '2025-07-28 18:58:23', 'title': 'BTC沖高回落？ETH失勢跌回！還漲嗎？回踩做多嗎？', 'viewCount': '13407'}, {'id': 'MTUxNzUzODEwODYyMTc1MzgxMDg2MjAwMDE3NA', 'published_at': '2025-07-29 17:41:02', 'title': 'BTC反彈？VAL得到支撐！繼續向上？', 'viewCount': '10541'}, {'id': 'MTUxNzUzODk4NjQ3MTc1Mzg5ODY0NzAwMDc0Ng', 'published_at': '2025-07-30 18:04:07', 'title': 'BTC盤後再漲！跌到哪做多？ETH可能這麼走……', 'viewCount': '11536'}, {'id': 'MTUxNzUzOTg1MDkzMTc1Mzk4NTA5MzAwMDYxNA', 'published_at': '2025-07-31 18:04:53', 'title': 'BTC急跌反彈！正常回踩？ETH還上去嗎？', 'viewCount': '12470'}, {'id': 'MTUxNzU0MDc0MTIzMTc1NDA3NDEyMzAwMDI2Nw', 'published_at': '2025-08-01 18:48:43', 'title': '比特幣急跌！能漲回去嗎？美股Coinbase怎麼了？', 'viewCount': '23751'}, {'id': 'MTUxNzU0MzMxMzU3MTc1NDMzMTM1NzAwMDE1MQ', 'published_at': '2025-08-04 18:15:57', 'title': 'BTC撐住反彈！重回區間，能再漲？ETH還沒完？', 'viewCount': '12934'}, {'id': 'MTUxNzU0NDE1ODkxMTc1NDQxNTg5MTAwMDQzMA', 'published_at': '2025-08-05 17:44:51', 'title': 'BTC在懸崖邊！撐住還能漲，跌破就完了！先看這一帶……', 'viewCount': '13860'}, {'id': 'MTUxNzU0NTAyMTM5MTc1NDUwMjEzOTAwMDc1OQ', 'published_at': '2025-08-06 17:42:19', 'title': 'BTC如期反彈！W底形成？多空之間，小心！', 'viewCount': '11818'}, {'id': 'MTUxNzU0NTg3MzAxMTc1NDU4NzMwMTAwMDEyMg', 'published_at': '2025-08-07 17:21:41', 'title': 'BTC強勢站回！能創新高？ETH真去15000？關鍵！', 'viewCount': '14612'}, {'id': 'MTUxNzU0Njc3MTQ1MTc1NDY3NzE0NTAwMDcyNQ', 'published_at': '2025-08-08 18:19:05', 'title': '以太4000！一切剛剛開始？或熱鬧將散場？BTC被搶風頭！', 'viewCount': '15753'}, {'id': 'MTUxNzU0OTM3MDI2MTc1NDkzNzAyNjAwMDgzNQ', 'published_at': '2025-08-11 18:30:26', 'title': '比特幣12萬！漲到這就行？遇到了拋壓！BTC、ETH能否再漲？', 'viewCount': '14586'}, {'id': 'MTUxNzU1MDI1NDE0MTc1NTAyNTQxNDAwMDc0NA', 'published_at': '2025-08-12 19:03:34', 'title': 'BTC重回12萬！ETH沖上4500！能否再漲？', 'viewCount': '14289'}, {'id': 'MTUxNzU1MTA3ODE1MTc1NTEwNzgxNTAwMDgyMw', 'published_at': '2025-08-13 17:56:55', 'title': 'BTC強反彈！ETH去4800？歷史高點臨近！山寨有機會……', 'viewCount': '12502'}, {'id': 'MTUxNzU1MTk1NDI2MTc1NTE5NTQyNjAwMDA2Mw', 'published_at': '2025-08-14 18:17:06', 'title': '比特幣大跳水！看跌吞沒？見頂？ETH還去4800嗎？', 'viewCount': '18211'}, {'id': 'MTUxNzU1Mjg1NDY4MTc1NTI4NTQ2ODAwMDE2NQ', 'published_at': '2025-08-15 19:17:48', 'title': 'BTC下跌才開始？是否有反彈？ETH還去新高嗎？', 'viewCount': '18567'}, {'id': 'MTUxNzU1NTQ3MjQ5MTc1NTU0NzI0OTAwMDI4NA', 'published_at': '2025-08-18 20:00:49', 'title': 'BTC周線不妙？回抽做空？留意MACD背離！ETH還行嗎？', 'viewCount': '14637'}, {'id': 'MTUxNzU1NjI2NjcxMTc1NTYyNjY3MTAwMDM2Nw', 'published_at': '2025-08-19 18:04:31', 'title': '比特幣見頂？BTC派發區間？這條線不能跌破！ETH呢？', 'viewCount': '16053'}, {'id': 'MTUxNzU1NzA5NDI3MTc1NTcwOTQyNzAwMDE1OA', 'published_at': '2025-08-20 17:03:47', 'title': 'BTC觸底反彈？ETH也臨近趨勢線！突破或有反彈！留意！', 'viewCount': '13540'}, {'id': 'MTUxNzU1ODAxNDgyMTc1NTgwMTQ4MjAwMDQ1MQ', 'published_at': '2025-08-21 18:38:02', 'title': 'BTC非跌破不可？多空之間，生死一線！ETH呢？', 'viewCount': '14371'}, {'id': 'MTUxNzU1ODg5NTE5MTc1NTg4OTUxOTAwMDMxMA', 'published_at': '2025-08-22 19:05:19', 'title': 'BTC死生之地，選擇生！再創新高？ETH穩穩的！', 'viewCount': '17857'}, {'id': 'MTUxNzU2MTQzODg0MTc1NjE0Mzg4NDAwMDE4MA', 'published_at': '2025-08-25 17:44:44', 'title': 'BTC頹勢初現？周線MACD死叉！ETH假突破？', 'viewCount': '16840'}, {'id': 'MTUxNzU2MjI4Nzk1MTc1NjIyODc5NTAwMDExNQ', 'published_at': '2025-08-26 17:19:55', 'title': 'BTC跌破！非常弱！有無回彈？做空？ETH賣不賣？', 'viewCount': '16262'}, {'id': 'MTUxNzU2MzE0ODQwMTc1NjMxNDg0MDAwMDg3NQ', 'published_at': '2025-08-27 17:14:00', 'title': 'BTC將反彈？收回這條線！ETH可能去更高？暫未受阻！', 'viewCount': '13255'}, {'id': 'MTUxNzU2NDAwNDA4MTc1NjQwMDQwODAwMDE4Ng', 'published_at': '2025-08-28 17:00:08', 'title': 'BTC翻回！如果撐住，將去12萬？ETH反彈受阻？', 'viewCount': '12466'}, {'id': 'MTUxNzU2NDkzODM5MTc1NjQ5MzgzOTAwMDkzNw', 'published_at': '2025-08-29 18:57:19', 'title': 'BTC徹底跌破！事出反常？兩年來第一次！得改變思維！', 'viewCount': '19645'}, {'id': 'MTUxNzU2NzUyMjY0MTc1Njc1MjI2NDAwMDE0Mg', 'published_at': '2025-09-01 18:44:24', 'title': 'BTC周線走壞！現貨賣不賣？合約做空？我的想法……', 'viewCount': '15359'}, {'id': 'MTUxNzU2ODI0MzU4MTc1NjgyNDM1ODAwMDkzOQ', 'published_at': '2025-09-02 14:45:58', 'title': '比特幣反彈！這次漲到哪？做空機會？ETH呢？', 'viewCount': '12461'}, {'id': 'MTUxNzU2OTE5MDQ3MTc1NjkxOTA0NzAwMDkzNw', 'published_at': '2025-09-03 17:04:07', 'title': 'BTC繼續反彈！臨近阻力位，是上是下？關鍵分界！', 'viewCount': '11013'}, {'id': 'MTUxNzU3MDAzOTYzMTc1NzAwMzk2MzAwMDk2NA', 'published_at': '2025-09-04 16:39:23', 'title': '比特幣反彈受阻！支撐阻力線，實在難上！跌到哪去？', 'viewCount': '11470'}, {'id': 'MTUxNzU3MDkyMjczMTc1NzA5MjI3MzAwMDcxMg', 'published_at': '2025-09-05 17:11:13', 'title': 'BTC漲不上去！難漲也難跌，到底去哪裡？ETH呢？', 'viewCount': '11809'}, {'id': 'MTUxNzU3MzUyMzk0MTc1NzM1MjM5NDAwMDI3Mg', 'published_at': '2025-09-08 17:26:34', 'title': 'BTC將反彈？盤整夠久，即將有動作！先去哪邊？', 'viewCount': '11536'}, {'id': 'MTUxNzU3NDM2MDY3MTc1NzQzNjA2NzAwMDk4MA', 'published_at': '2025-09-09 16:41:07', 'title': 'BTC潛在杯柄突破？最好先向下！ETH完全換手中……', 'viewCount': '10882'}, {'id': 'MTUxNzU3NTI2OTI5MTc1NzUyNjkyOTAwMDE5NQ', 'published_at': '2025-09-10 17:55:29', 'title': 'BTC總算突破！是真是假？突破做多，反手做空？', 'viewCount': '11039'}, {'id': 'MTUxNzU3NjExNjUyMTc1NzYxMTY1MjAwMDY0NA', 'published_at': '2025-09-11 17:27:32', 'title': 'BTC反彈穩了？不可跌回這條線！漲到XX就行了？', 'viewCount': '10925'}, {'id': 'MTUxNzU3NzAwNTE2MTc1NzcwMDUxNjAwMDY1OA', 'published_at': '2025-09-12 18:08:36', 'title': 'BTC反彈到…？見頂倒計時？大週期分析！ETH也同步？', 'viewCount': '16218'}, {'id': 'MTUxNzU3OTU5NTgyMTc1Nzk1OTU4MjAwMDAzMw', 'published_at': '2025-09-15 18:06:22', 'title': 'BTC強周線！繼續反彈？還能漲多高？以太ETH呢？', 'viewCount': '11605'}, {'id': 'MTUxNzU4MDQ2MDE2MTc1ODA0NjAxNjAwMDE2Ng', 'published_at': '2025-09-16 18:06:56', 'title': 'BTC繼續漲？還沒到位！到哪受阻？準備做空？', 'viewCount': '10521'}, {'id': 'MTUxNzU4MTMyMDkwMTc1ODEzMjA5MDAwMDEwOA', 'published_at': '2025-09-17 18:01:30', 'title': 'BTC盤整蓄勢！直接突破？或先回踩？兩個交易計劃！', 'viewCount': '10629'}, {'id': 'MTUxNzU4MjIwNjEwMTc1ODIyMDYxMDAwMDMzNg', 'published_at': '2025-09-18 18:36:50', 'title': 'BTC上攻！即將重回12萬！BNB上1000，山寨季？', 'viewCount': '12094'}, {'id': 'MTUxNzU4MzA3MTM2MTc1ODMwNzEzNjAwMDEzOQ', 'published_at': '2025-09-19 18:38:56', 'title': '比特幣掉頭向下！馬上做空？還是再等等？關鍵臨界點！', 'viewCount': '15123'}, {'id': 'MTUxNzU4NTYzMDE5MTc1ODU2MzAxOTAwMDY4NQ', 'published_at': '2025-09-22 17:43:39', 'title': 'BTC新月開跌！一切才剛剛開始？還能反彈一下嗎？ETH也有點矛盾！', 'viewCount': '15200'}, {'id': 'MTUxNzU4NjUyMzM2MTc1ODY1MjMzNjAwMDg2Ng', 'published_at': '2025-09-23 18:32:16', 'title': 'BTC仍下跌！一路向下不回頭？反彈是否有可能？', 'viewCount': '12525'}, {'id': 'MTUxNzU4NzM3MzkwMTc1ODczNzM5MDAwMDUxMg', 'published_at': '2025-09-24 18:09:50', 'title': 'BTC跌破收回！強勢出現，如期反彈？漲到哪去？', 'viewCount': '11476'}, {'id': 'MTUxNzU4ODI1MjMyMTc1ODgyNTIzMjAwMDg1MQ', 'published_at': '2025-09-25 18:33:52', 'title': 'BTC跌破！假突破後，直接去前低？毫無強勢，直接走壞？', 'viewCount': '13828'}, {'id': 'MTUxNzU4OTA4NDMxMTc1ODkwODQzMTAwMDYwMQ', 'published_at': '2025-09-26 17:40:31', 'title': 'BTC沒跌完！下跌目標是？之後還能漲？可能週末動！', 'viewCount': '11894'}, {'id': 'MTUxNzU5MTY5ODgzMTc1OTE2OTg4MzAwMDExMw', 'published_at': '2025-09-29 18:18:03', 'title': 'BTC直線拉漲！島形反轉！反彈開始？目標在哪？ETH呢', 'viewCount': '12507'}, {'id': 'MTUxNzU5MjU3ODU5MTc1OTI1Nzg1OTAwMDA0MQ', 'published_at': '2025-09-30 18:44:19', 'title': 'BTC反彈中繼！盤整一下，還能再漲？回調時上車？', 'viewCount': '9009'}, {'id': 'MTUxNzU5MzQzNjcxMTc1OTM0MzY3MTAwMDE1Mg', 'published_at': '2025-10-01 18:34:31', 'title': 'BTC強勢反彈！再破小前高！這次去120000？是否新高？', 'viewCount': '11767'}, {'id': 'MTUxNzU5NDI5NTQzMTc1OTQyOTU0MzAwMDAzOA', 'published_at': '2025-10-02 18:25:43', 'title': '比特幣12萬！總算來到！是否做空？還去新高嗎？ETH呢', 'viewCount': '12355'}, {'id': 'MTUxNzU5NTEzNjc3MTc1OTUxMzY3NzAwMDk2OA', 'published_at': '2025-10-03 17:47:57', 'title': 'BTC新高在即！繼續漲？小心掉頭！ETH上漲目標？', 'viewCount': '15680'}, {'id': 'MTUxNzU5NzcxNTM3MTc1OTc3MTUzNzAwMDE5OA', 'published_at': '2025-10-06 17:25:37', 'title': 'BTC再創新高！滿月繼續漲？ETH也有新高？', 'viewCount': '12403'}, {'id': 'MTUxNzU5ODU4NTA5MTc1OTg1ODUwOTAwMDY4Nw', 'published_at': '2025-10-07 17:35:09', 'title': 'BTC假突破？不要追多了！多次沖高，不要急躁！', 'viewCount': '15193'}, {'id': 'MTUxNzU5OTQ0ODExMTc1OTk0NDgxMTAwMDA4NA', 'published_at': '2025-10-08 17:33:31', 'title': 'BTC還反彈？這一帶，小心空頭陷阱！ETH還漲嗎？', 'viewCount': '12586'}, {'id': 'MTUxNzYwMDM1NDE4MTc2MDAzNTQxODAwMDY4MA', 'published_at': '2025-10-09 18:43:38', 'title': 'BTC回抽不過！順暢下跌！反彈無力，大勢已去？ETH呢', 'viewCount': '13443'}, {'id': 'MTUxNzYwMTIxOTg1MTc2MDEyMTk4NTAwMDM1MA', 'published_at': '2025-10-10 18:46:25', 'title': 'BTC急跌！跌到哪？反彈做多？逢高做空！', 'viewCount': '18901'}, {'id': 'MTUxNzYwMzc3OTY4MTc2MDM3Nzk2ODAwMDI2MQ', 'published_at': '2025-10-13 17:52:48', 'title': 'BTC暴跌大清算！砸出黃金坑？難得買入機會？或之後還跌？', 'viewCount': '16459'}, {'id': 'MTUxNzYwNDY1MTQzMTc2MDQ2NTE0MzAwMDg0MQ', 'published_at': '2025-10-14 18:05:43', 'title': 'BTC反彈無力！進入盤整區，向上或向下？何處加倉？', 'viewCount': '11202'}, {'id': 'MTUxNzYwNTQ5OTU4MTc2MDU0OTk1ODAwMDg4Ng', 'published_at': '2025-10-15 17:39:18', 'title': 'BTC反彈無力！漲完了嗎？ETH呢？可能去這……！', 'viewCount': '15591'}, {'id': 'MTUxNzYwNjM1NTU0MTc2MDYzNTU1NDAwMDYxNA', 'published_at': '2025-10-16 17:25:54', 'title': 'BTC還能跌？比特幣止跌關鍵：收復這價位……', 'viewCount': '13718'}, {'id': 'MTUxNzYwNzI1NDEzMTc2MDcyNTQxMzAwMDYzMw', 'published_at': '2025-10-17 18:23:33', 'title': 'BTC潰敗下跌！毫無反彈力量？不是金坑，是陷阱！', 'viewCount': '18047'}, {'id': 'MTUxNzYwOTgxMzc2MTc2MDk4MTM3NjAwMDIxOA', 'published_at': '2025-10-20 17:29:36', 'title': 'BTC反彈！做多？這次漲到哪？上方缺口在這！', 'viewCount': '13918'}, {'id': 'MTUxNzYxMDcwNzgwMTc2MTA3MDc4MDAwMDE4NA', 'published_at': '2025-10-21 18:19:40', 'title': 'BTC仍能反彈？去補這個缺口！之後呢？', 'viewCount': '10514'}, {'id': 'MTUxNzYxMTUzMTQ0MTc2MTE1MzE0NDAwMDc1Ng', 'published_at': '2025-10-22 17:12:24', 'title': 'BTC上下畫門！波動急劇放大！反彈實在太難了？', 'viewCount': '10988'}, {'id': 'MTUxNzYxMjM4NDUwMTc2MTIzODQ1MDAwMDA0Nw', 'published_at': '2025-10-23 16:54:10', 'title': 'BTC盤整！無處可去？最好上來一下！之後呢？', 'viewCount': '9271'}, {'id': 'MTUxNzYxMzI5NTEwMTc2MTMyOTUxMDAwMDczNA', 'published_at': '2025-10-24 18:11:50', 'title': 'BTC極致盤整！上方缺口有吸引力？美股新高！', 'viewCount': '9828'}, {'id': 'MTUxNzYxNTg4MDgyMTc2MTU4ODA4MjAwMDUxMw', 'published_at': '2025-10-27 18:01:22', 'title': 'BTC果然漲上來！進入高危區！多空只在這一線？！', 'viewCount': '12497'}, {'id': 'MTUxNzYxNjczNjc3MTc2MTY3MzY3NzAwMDU5Mw', 'published_at': '2025-10-28 17:47:57', 'title': 'BTC不肯跌？缺口還是要補足？可能在蓄勢！', 'viewCount': '10434'}, {'id': 'MTUxNzYxNzY1NDg2MTc2MTc2NTQ4NjAwMDk3Ng', 'published_at': '2025-10-29 19:18:06', 'title': 'BTC反彈完了？迅猛下跌！缺口是否補足？', 'viewCount': '4390'}];
+
+            // 准备图表数据
+            var viewCountXAxisData = ['2025-05-06', '2025-05-07', '2025-05-08', '2025-05-09', '2025-05-12', '2025-05-13', '2025-05-14', '2025-05-15', '2025-05-16', '2025-05-19', '2025-05-20', '2025-05-21', '2025-05-22', '2025-05-23', '2025-05-26', '2025-05-27', '2025-05-28', '2025-05-29', '2025-05-30', '2025-06-02', '2025-06-03', '2025-06-04', '2025-06-05', '2025-06-06', '2025-06-09', '2025-06-10', '2025-06-11', '2025-06-12', '2025-06-13', '2025-06-16', '2025-06-17', '2025-06-18', '2025-06-19', '2025-06-20', '2025-06-22', '2025-06-23', '2025-06-24', '2025-06-25', '2025-06-26', '2025-06-27', '2025-06-30', '2025-07-01', '2025-07-02', '2025-07-03', '2025-07-04', '2025-07-07', '2025-07-08', '2025-07-09', '2025-07-10', '2025-07-11', '2025-07-14', '2025-07-15', '2025-07-16', '2025-07-17', '2025-07-18', '2025-07-21', '2025-07-22', '2025-07-23', '2025-07-24', '2025-07-25', '2025-07-28', '2025-07-29', '2025-07-30', '2025-07-31', '2025-08-01', '2025-08-04', '2025-08-05', '2025-08-06', '2025-08-07', '2025-08-08', '2025-08-11', '2025-08-12', '2025-08-13', '2025-08-14', '2025-08-15', '2025-08-18', '2025-08-19', '2025-08-20', '2025-08-21', '2025-08-22', '2025-08-25', '2025-08-26', '2025-08-27', '2025-08-28', '2025-08-29', '2025-09-01', '2025-09-02', '2025-09-03', '2025-09-04', '2025-09-05', '2025-09-08', '2025-09-09', '2025-09-10', '2025-09-11', '2025-09-12', '2025-09-15', '2025-09-16', '2025-09-17', '2025-09-18', '2025-09-19', '2025-09-22', '2025-09-23', '2025-09-24', '2025-09-25', '2025-09-26', '2025-09-29', '2025-09-30', '2025-10-01', '2025-10-02', '2025-10-03', '2025-10-06', '2025-10-07', '2025-10-08', '2025-10-09', '2025-10-10', '2025-10-13', '2025-10-14', '2025-10-15', '2025-10-16', '2025-10-17', '2025-10-20', '2025-10-21', '2025-10-22', '2025-10-23', '2025-10-24', '2025-10-27', '2025-10-28', '2025-10-29'];
+            var viewCountSeriesData = ['10511', '8618', '14484', '13329', '12134', '10511', '9824', '8866', '12391', '10969', '10023', '11079', '11817', '14906', '12669', '10377', '9885', '9678', '13710', '11480', '10237', '10661', '14696', '15563', '13319', '11862', '11837', '13025', '15010', '12447', '14086', '11292', '10720', '14799', '15136', '12943', '14983', '11838', '10569', '12420', '10647', '10974', '11946', '11080', '12619', '11448', '10323', '11136', '15595', '18860', '14169', '15771', '13670', '13014', '16087', '14565', '11890', '14099', '11036', '13895', '13407', '10541', '11536', '12470', '23751', '12934', '13860', '11818', '14612', '15753', '14586', '14289', '12502', '18211', '18567', '14637', '16053', '13540', '14371', '17857', '16840', '16262', '13255', '12466', '19645', '15359', '12461', '11013', '11470', '11809', '11536', '10882', '11039', '10925', '16218', '11605', '10521', '10629', '12094', '15123', '15200', '12525', '11476', '13828', '11894', '12507', '9009', '11767', '12355', '15680', '12403', '15193', '12586', '13443', '18901', '16459', '11202', '15591', '13718', '18047', '13918', '10514', '10988', '9271', '9828', '12497', '10434', '4390'];
+            var subscriberCountXAxisData = ['2025-09-22', '2025-09-23', '2025-09-24', '2025-09-25', '2025-09-26', '2025-09-27', '2025-09-28', '2025-09-29', '2025-09-30', '2025-10-01', '2025-10-02', '2025-10-03', '2025-10-04', '2025-10-05', '2025-10-06', '2025-10-07', '2025-10-08', '2025-10-09', '2025-10-10', '2025-10-11', '2025-10-12', '2025-10-13', '2025-10-14', '2025-10-15', '2025-10-16', '2025-10-17', '2025-10-18', '2025-10-19', '2025-10-19', '2025-10-20', '2025-10-20', '2025-10-21', '2025-10-22', '2025-10-23', '2025-10-24', '2025-10-25', '2025-10-26', '2025-10-27', '2025-10-28', '2025-10-29'];
+            var subscriberCountSeriesData = [44, 13, 44, 44, 43, 44, 72, 16, 43, 44, -56, 44, -57, 44, -56, 44, -57, 44, 44, 12, 30, 31, 30, 44, 17, 31, 30, 31, 43, 30, 18, 31, 30, 31, 31, 30, 31, 30, 31, 30];
+
+            // 定义一个函数来改变图表类型
+            function changeChartType(chartId, type, typeText) {
+                // 根据 ID 获取 ECharts 实例
+                var chartInstance = echarts.getInstanceByDom(document.getElementById(chartId));
+                if (chartInstance) {
+                    // 获取当前配置，并进行深拷贝，避免直接修改原始配置
+                    var currentOption = chartInstance.getOption();
+                    var newOption = JSON.parse(JSON.stringify(currentOption));
+
+                    // 仅修改 series 的 type
+                    newOption.series[0].type = type;
+
+                    // 根据图表类型调整特定配置
+                    if (type === 'line') {
+                        // 折线图
+                        newOption.series[0].smooth = true;
+                        newOption.series[0].symbol = 'circle';
+                        newOption.series[0].symbolSize = 8;
+                        newOption.series[0].itemStyle = {
+                            color: '#6A5ACD'
+                        };
+                    } else {
+                        // 柱形图
+                        newOption.series[0].smooth = false;
+                        newOption.series[0].symbol = 'none';
+                        newOption.series[0].symbolSize = 0;
+
+                        // 重新设置柱形图的动态颜色函数
+                        if (chartId === 'viewCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 500000) return '#8B0000';  // 极高热
+                                if (value > 200000) return '#DC143C';  // 超高热
+                                if (value > 100000) return '#FF4500';  // 高热
+                                if (value > 50000) return '#FF8C00';  // 中高热
+                                if (value > 20000) return '#FFA500';  // 中热
+                                if (value > 10000) return '#FFD700';  // 中低热
+                                if (value > 5000) return '#32CD32';  // 一般
+                                if (value > 1000)  return '#1E90FF';  // 较低
+                                return '#B0C4DE';     // 冷门
+                            };
+                        } else if (chartId === 'subscriberCountChart') {
+                            newOption.series[0].itemStyle.color = function(params) {
+                                var value = params.value;
+                                if (value > 1000) return '#FF4500';  // 高热
+                                if (value > 500) return '#FF8C00';  // 中热
+                                if (value > 200) return '#32CD32';   // 一般
+                                return '#1E90FF';                     // 较低
+                            };
+                        }
+                    }
+
+                    chartInstance.setOption(newOption, true);
+                    document.getElementById(chartId + 'Type').innerText = typeText;
+                }
+            }
+
+            // 初始配置和渲染图表
+            var viewCountOption = {
+                title: {
+                    text: '每日视频播放量统计',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        var dataIndex = params[0].dataIndex;
+                        var videoItem = viewCountData[dataIndex];
+                        return '视频标题: ' + videoItem.title + '<br/>' +
+                               '发布日期: ' + videoItem.published_at + '<br/>' +
+                               '播放量: ' + videoItem.viewCount.toLocaleString();
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: viewCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '发布日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '播放量',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    },
+                    axisLabel: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: '播放量',
+                    type: 'bar',
+                    data: viewCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 500000) return '#8B0000';
+                            if (value > 200000) return '#DC143C';
+                            if (value > 100000) return '#FF4500';
+                            if (value > 50000) return '#FF8C00';
+                            if (value > 20000) return '#FFA500';
+                            if (value > 10000) return '#FFD700';
+                            if (value > 5000) return '#32CD32';
+                            if (value > 1000)  return '#1E90FF';
+                            return '#B0C4DE';
+                        }
+                    },
+                    label: {
+                        show: false,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value.toLocaleString();
+                        }
+                    }
+                }],
+                dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            viewCountChart.setOption(viewCountOption);
+
+            var subscriberCountOption = {
+                title: {
+                    text: '每日新增订阅数',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: subscriberCountXAxisData,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 45,
+                        fontSize: 10
+                    },
+                    name: '日期',
+                    nameLocation: 'end'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '新增订阅数',
+                    nameTextStyle: {
+                        fontWeight: 'bold'
+                    }
+                },
+                series: [{
+                    name: '新增订阅数',
+                    type: 'bar',
+                    data: subscriberCountSeriesData,
+                    itemStyle: {
+                        color: function(params) {
+                            var value = params.value;
+                            if (value > 1000) return '#FF4500';
+                            if (value > 500) return '#FF8C00';
+                            if (value > 200) return '#32CD32';
+                            return '#1E90FF';
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: function(params) {
+                            return params.value;
+                        }
+                    }
+                }],
+                 dataZoom: [{
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                }, {
+                    type: 'slider',
+                    start: 0,
+                    end: 100
+                }]
+            };
+            subscriberCountChart.setOption(subscriberCountOption);
+
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                viewCountChart.resize();
+                subscriberCountChart.resize();
+            });
+        </script>
+    </body>
+    </html>
